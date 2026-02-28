@@ -169,7 +169,7 @@ function playBeep(type) {
     } catch(e){}
 }
 
-// --- 3. DỰ ĐOÁN (KẾT NỐI SERVER V2) ---
+// --- 3. DỰ ĐOÁN (ĐÃ ĐỒNG BỘ ĐƯỜNG DẪN /predict) ---
 async function fetchApiAndPredict() {
     const btn = document.getElementById("btn-auto");
     const resultBox = document.getElementById("result-box");
@@ -178,7 +178,8 @@ async function fetchApiAndPredict() {
 
     try {
         const hwid = await getHWID();
-        const response = await fetch(KEY_SERVER_URL + "/get-prediction-v2", {
+        // SỬA TẠI ĐÂY: /get-prediction-v2 -> /predict
+        const response = await fetch(KEY_SERVER_URL + "/predict", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -196,7 +197,6 @@ async function fetchApiAndPredict() {
             return;
         }
 
-        // --- Logic Đảo/Bẻ tại Client (Giữ nguyên tính năng của Dũng) ---
         let finalKQ = data.ket_qua;
         const invertChain = document.getElementById('invert-chain-checkbox').checked;
         const invertFinal = document.getElementById('invert-final-checkbox').checked;
@@ -205,7 +205,6 @@ async function fetchApiAndPredict() {
         const reverse = (k) => k === 'Tài' ? 'Xỉu' : (k === 'Xỉu' ? 'Tài' : k);
         if(invertChain || invertFinal || invertAllBtn) finalKQ = reverse(finalKQ);
 
-        // --- RENDER HTML (GIỮ NGUYÊN STYLE) ---
         const getCls = (k) => k.includes('Tài') ? 'color-tai' : (k.includes('Xỉu') ? 'color-xiu' : '');
         
         resultBox.innerHTML = `
@@ -234,7 +233,7 @@ async function fetchApiAndPredict() {
         showToast("Cập nhật thành công!", "success");
 
     } catch (e) {
-        showToast("Lỗi kết nối Server", "error");
+        showToast("Lỗi kết nối Server dự đoán", "error");
     } finally {
         btn.innerHTML = "🔄 CẬP NHẬT DỮ LIỆU CẦU";
         btn.disabled = false;
@@ -286,7 +285,6 @@ document.getElementById('checkBtn').onclick = async () => {
     btn.disabled = false;
 };
 
-// Toggles Nâng cao
 document.getElementById('btn-invert-all').onclick = function() { this.classList.toggle('active'); };
 document.getElementById('btn-invert-chain').onclick = function() { this.classList.toggle('active'); };
 
@@ -297,14 +295,12 @@ function togglePanel() {
     else { p.style.display='none'; b.style.display='block'; }
 }
 
-// Kéo thả Tool
 const header = document.getElementById("panel-header");
 const panel = document.getElementById("tool-panel");
 let isDragging=false, ox=0, oy=0;
 header.onmousedown = (e) => { isDragging=true; ox=e.clientX-panel.offsetLeft; oy=e.clientY-panel.offsetTop; };
 document.onmousemove = (e) => { if(isDragging) { panel.style.left=(e.clientX-ox)+'px'; panel.style.top=(e.clientY-oy)+'px'; panel.style.right='auto'; } };
 document.onmouseup = () => isDragging=false;
-
 </script>
 </body>
 </html>
