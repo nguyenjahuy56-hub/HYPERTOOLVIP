@@ -191,6 +191,15 @@
     </div>
 
 <script>
+// ================= BẢO MẬT CHỐNG F12 & CHUỘT PHẢI =================
+document.addEventListener('contextmenu', event => event.preventDefault()); // Chặn chuột phải
+document.addEventListener('keydown', function(e) {
+    if(e.keyCode === 123) { e.preventDefault(); return false; } // Chặn F12
+    if(e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; } // Chặn Ctrl+Shift+I
+    if(e.ctrlKey && e.shiftKey && e.keyCode === 74) { e.preventDefault(); return false; } // Chặn Ctrl+Shift+J
+    if(e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; } // Chặn Ctrl+U
+});
+
 const KEY_SERVER_URL = "https://vip-key-server.onrender.com";
 // KEY BẢO MẬT (PHẢI TRÙNG VỚI SERVER)
 const HWID_SECRET = "MY_SUPER_SECRET_HWID_KEY_2026"; 
