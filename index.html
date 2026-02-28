@@ -192,12 +192,12 @@
 
 <script>
 // ================= BẢO MẬT CHỐNG F12 & CHUỘT PHẢI =================
-document.addEventListener('contextmenu', event => event.preventDefault()); // Chặn chuột phải
+document.addEventListener('contextmenu', event => event.preventDefault()); 
 document.addEventListener('keydown', function(e) {
-    if(e.keyCode === 123) { e.preventDefault(); return false; } // Chặn F12
-    if(e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; } // Chặn Ctrl+Shift+I
-    if(e.ctrlKey && e.shiftKey && e.keyCode === 74) { e.preventDefault(); return false; } // Chặn Ctrl+Shift+J
-    if(e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; } // Chặn Ctrl+U
+    if(e.keyCode === 123) { e.preventDefault(); return false; } 
+    if(e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; } 
+    if(e.ctrlKey && e.shiftKey && e.keyCode === 74) { e.preventDefault(); return false; } 
+    if(e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; } 
 });
 
 // ================= BẪY DEBUGGER CHỐNG SOI CODE =================
@@ -206,7 +206,6 @@ setInterval(function() {
 }, 50);
 
 const KEY_SERVER_URL = "https://vip-key-server.onrender.com";
-// KEY BẢO MẬT (PHẢI TRÙNG VỚI SERVER)
 const HWID_SECRET = "MY_SUPER_SECRET_HWID_KEY_2026"; 
 
 window.lastDataString = ""; 
@@ -214,7 +213,6 @@ let selectedGame = '';
 let sessionToken = null; 
 let currentKey = null;
 
-/* HÀM TẠO CHỮ KÝ HMAC-SHA256 (CHỐNG FAKE HWID) */
 function generateSignature(hwid, timestamp) {
     return CryptoJS.HmacSHA256(hwid + timestamp, HWID_SECRET).toString();
 }
@@ -242,7 +240,6 @@ function playBeep(type) {
     } catch(e) {}
 }
 
-/* TẠO HWID CHỐNG FAKE BẰNG CANVAS FINGERPRINTING */
 async function getHWID() {
     let id = localStorage.getItem("device_hw");
     if(id) return id;
@@ -312,18 +309,26 @@ document.getElementById('auto-refresh-checkbox').addEventListener('change', (e) 
     }
 });
 
+// THÊM: Nếu hết thời gian ở bảng đếm ngược thì TỰ KICK
 function startExpireCountdown(expireTs){
     if(expireTimer) clearInterval(expireTimer);
     function update(){
         const now = Date.now(); const diff = expireTs - now;
-        if(diff <= 0){ expireBadge.innerText = "Key: Hết hạn"; clearInterval(expireTimer); return; }
+        if(diff <= 0){ 
+            expireBadge.innerText = "Key: Hết hạn"; 
+            clearInterval(expireTimer); 
+            showToast("⏳ Key đã hết hạn. Đang đóng tool...", "error");
+            setTimeout(() => location.reload(), 2000); // KICK VỀ TRANG CHỦ
+            return; 
+        }
         const totalSec = Math.floor(diff/1000);
         const days = Math.floor(totalSec / 86400), hours = Math.floor((totalSec % 86400) / 3600), mins = Math.floor((totalSec % 3600) / 60);
         expireBadge.innerText = "Key expires: " + (days>0? days+"d ":"") + String(hours).padStart(2,"0")+":"+String(mins).padStart(2,"0");
-    } update(); expireTimer = setInterval(update, 1000);
+    } 
+    update(); 
+    expireTimer = setInterval(update, 1000);
 }
 
-/* CẬP NHẬT GỬI CHỮ KÝ KHI CHECK KEY */
 async function checkKeyFlow(){
     const key = (keyInput.value || "").trim();
     if(!key){ entryMsg.className="msg error"; entryMsg.innerText="Vui lòng nhập key"; return; }
@@ -399,7 +404,6 @@ function invertKQ(k){ if(!k) return k; return (k === 'Tài' || k === 'T' || k ==
 
 document.getElementById('api-source-select').addEventListener('change', () => { window.lastDataString = ""; document.getElementById("btn-auto").innerHTML = "🔄 ĐANG CHUYỂN BÀN..."; setTimeout(fetchApiAndPredict, 500); });
 
-/* CẬP NHẬT GỬI CHỮ KÝ KHI LẤY DỰ ĐOÁN */
 async function fetchApiAndPredict() {
     const resultBox = document.getElementById("result-box");
     const btn = document.getElementById("btn-auto");
@@ -444,7 +448,13 @@ async function fetchApiAndPredict() {
             lastDice = predictData.lastDice || [];
         } else {
             showToast(`Lỗi: ${predictData.message || 'Lỗi hệ thống.'}`, 'error');
-            btn.innerHTML = "🔄 CẬP NHẬT DỮ LIỆU CẦU"; btn.style.opacity = "1"; return;
+            btn.innerHTML = "🔄 CẬP NHẬT DỮ LIỆU CẦU"; btn.style.opacity = "1"; 
+            
+            // THÊM: KICK NGƯỜI DÙNG KHI CÓ LỆNH TỪ SERVER (bị xóa, hết hạn, ip-lock)
+            if (predictData.kicked) {
+                setTimeout(() => { location.reload(); }, 2500); // ĐÁ VĂNG
+            }
+            return;
         }
     } catch (e) {
         showToast("Lỗi kết nối Server.", "error");
