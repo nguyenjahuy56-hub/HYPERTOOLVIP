@@ -200,6 +200,11 @@ document.addEventListener('keydown', function(e) {
     if(e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; } // Chặn Ctrl+U
 });
 
+// ================= BẪY DEBUGGER CHỐNG SOI CODE =================
+setInterval(function() {
+    (function() { return false; }['constructor']('debugger')());
+}, 50);
+
 const KEY_SERVER_URL = "https://vip-key-server.onrender.com";
 // KEY BẢO MẬT (PHẢI TRÙNG VỚI SERVER)
 const HWID_SECRET = "MY_SUPER_SECRET_HWID_KEY_2026"; 
@@ -209,6 +214,7 @@ let selectedGame = '';
 let sessionToken = null; 
 let currentKey = null;
 
+/* HÀM TẠO CHỮ KÝ HMAC-SHA256 (CHỐNG FAKE HWID) */
 function generateSignature(hwid, timestamp) {
     return CryptoJS.HmacSHA256(hwid + timestamp, HWID_SECRET).toString();
 }
@@ -236,6 +242,7 @@ function playBeep(type) {
     } catch(e) {}
 }
 
+/* TẠO HWID CHỐNG FAKE BẰNG CANVAS FINGERPRINTING */
 async function getHWID() {
     let id = localStorage.getItem("device_hw");
     if(id) return id;
@@ -305,10 +312,6 @@ document.getElementById('auto-refresh-checkbox').addEventListener('change', (e) 
     }
 });
 
-async function fetchKeyInfoFromServer(key){
-    try{ const res = await fetch(KEY_SERVER_URL + "/keys"); if(!res.ok) return null; const data = await res.json(); return data.find(k => k.key === key) || null; }catch(e){ return null; }
-}
-
 function startExpireCountdown(expireTs){
     if(expireTimer) clearInterval(expireTimer);
     function update(){
@@ -320,6 +323,7 @@ function startExpireCountdown(expireTs){
     } update(); expireTimer = setInterval(update, 1000);
 }
 
+/* CẬP NHẬT GỬI CHỮ KÝ KHI CHECK KEY */
 async function checkKeyFlow(){
     const key = (keyInput.value || "").trim();
     if(!key){ entryMsg.className="msg error"; entryMsg.innerText="Vui lòng nhập key"; return; }
@@ -337,9 +341,8 @@ async function checkKeyFlow(){
         const data = await resp.json();
         if(data && data.success){
             sessionToken = data.token;
-            const info = await fetchKeyInfoFromServer(key);
             currentKey = key;
-            if(info && info.expire) startExpireCountdown(info.expire); else expireBadge.innerText = "Key: (no expire)";
+            if(data.expire) startExpireCountdown(data.expire); else expireBadge.innerText = "Key: (no expire)";
             
             entryMsg.className = "msg success";
             entryMsg.innerText = `✅ Key hợp lệ cho ${selectedGame.toUpperCase()}. Đang mở game...`;
@@ -396,6 +399,7 @@ function invertKQ(k){ if(!k) return k; return (k === 'Tài' || k === 'T' || k ==
 
 document.getElementById('api-source-select').addEventListener('change', () => { window.lastDataString = ""; document.getElementById("btn-auto").innerHTML = "🔄 ĐANG CHUYỂN BÀN..."; setTimeout(fetchApiAndPredict, 500); });
 
+/* CẬP NHẬT GỬI CHỮ KÝ KHI LẤY DỰ ĐOÁN */
 async function fetchApiAndPredict() {
     const resultBox = document.getElementById("result-box");
     const btn = document.getElementById("btn-auto");
@@ -424,9 +428,9 @@ async function fetchApiAndPredict() {
                 source: source, 
                 seqLength: selectedLen, 
                 invertChain: invertChain,
-                timestamp: timestamp,
-                signature: signature,
-                game: selectedGame 
+                timestamp,
+                signature,
+                game: selectedGame
             })
         });
         const predictData = await predictResp.json();
