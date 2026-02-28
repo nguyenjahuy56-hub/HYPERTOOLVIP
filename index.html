@@ -95,6 +95,7 @@
             <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px;">
                 <button id="btn-select-lc79" class="btn" style="background:linear-gradient(180deg,#00c853,#00b44a); padding: 14px;">MỞ TOOL LC79</button>
                 <button id="btn-select-xd88" class="btn" style="background:linear-gradient(180deg,#f39c12,#d35400); padding: 14px;">MỞ TOOL XOCDIA88</button>
+                <button id="btn-select-betvip" class="btn" style="background:linear-gradient(180deg,#e11d48,#be123c); padding: 14px;">MỞ TOOL BETVIP</button>
             </div>
         </div>
     </div>
@@ -199,7 +200,6 @@ let selectedGame = '';
 let sessionToken = null; 
 let currentKey = null;
 
-/* HÀM TẠO CHỮ KÝ HMAC-SHA256 (CHỐNG FAKE HWID) */
 function generateSignature(hwid, timestamp) {
     return CryptoJS.HmacSHA256(hwid + timestamp, HWID_SECRET).toString();
 }
@@ -227,7 +227,6 @@ function playBeep(type) {
     } catch(e) {}
 }
 
-/* TẠO HWID CHỐNG FAKE BẰNG CANVAS FINGERPRINTING */
 async function getHWID() {
     let id = localStorage.getItem("device_hw");
     if(id) return id;
@@ -257,6 +256,7 @@ const checkBtn = document.getElementById("checkBtn");
 const keyInput = document.getElementById("keyInput");
 const btnSelectLc79 = document.getElementById("btn-select-lc79");
 const btnSelectXd88 = document.getElementById("btn-select-xd88");
+const btnSelectBetvip = document.getElementById("btn-select-betvip");
 const backToGameSelectBtn = document.getElementById("backToGameSelectBtn");
 const gameNameDisplay = document.getElementById("gameNameDisplay");
 const gameNameSub = document.getElementById("gameNameSub");
@@ -282,6 +282,7 @@ let autoRefreshInterval = null;
 
 btnSelectLc79.addEventListener("click", () => { selectedGame = 'lc79'; gameNameDisplay.innerText = "LC79"; gameNameSub.innerText = "LC79"; hide(gameSelectOverlay); show(entryOverlay); });
 btnSelectXd88.addEventListener("click", () => { selectedGame = 'xd88'; gameNameDisplay.innerText = "XOCDIA88"; gameNameSub.innerText = "XOCDIA88"; hide(gameSelectOverlay); show(entryOverlay); });
+btnSelectBetvip.addEventListener("click", () => { selectedGame = 'betvip'; gameNameDisplay.innerText = "BETVIP"; gameNameSub.innerText = "BETVIP"; hide(gameSelectOverlay); show(entryOverlay); });
 backToGameSelectBtn.addEventListener("click", () => { hide(entryOverlay); show(gameSelectOverlay); keyInput.value = ""; entryMsg.innerText = ""; });
 
 document.getElementById('auto-refresh-checkbox').addEventListener('change', (e) => {
@@ -310,7 +311,6 @@ function startExpireCountdown(expireTs){
     } update(); expireTimer = setInterval(update, 1000);
 }
 
-/* CẬP NHẬT GỬI CHỮ KÝ KHI CHECK KEY */
 async function checkKeyFlow(){
     const key = (keyInput.value || "").trim();
     if(!key){ entryMsg.className="msg error"; entryMsg.innerText="Vui lòng nhập key"; return; }
@@ -347,6 +347,7 @@ checkBtn.addEventListener("click", checkKeyFlow);
 function openGameFrame(gameType) {
     if(gameType === 'lc79') { gameFrame.src = "https://lc79b.bet/"; toolTitle.innerText = "🎯 TOOL DỰ ĐOÁN LC79"; } 
     else if(gameType === 'xd88') { gameFrame.src = "https://play.xocdia88.green/"; toolTitle.innerText = "🎯 TOOL DỰ ĐOÁN XOCDIA88"; }
+    else if(gameType === 'betvip') { gameFrame.src = "https://play.betvip.fit/"; toolTitle.innerText = "🎯 TOOL DỰ ĐOÁN BETVIP"; }
     show(gameFrame);
     setTimeout(()=>{ toolPanel.style.display = "block"; toolPanel.setAttribute("aria-hidden","false"); toggleBtn.style.display = "none"; window.lastDataString = ""; }, 300);
 }
@@ -386,7 +387,6 @@ function invertKQ(k){ if(!k) return k; return (k === 'Tài' || k === 'T' || k ==
 
 document.getElementById('api-source-select').addEventListener('change', () => { window.lastDataString = ""; document.getElementById("btn-auto").innerHTML = "🔄 ĐANG CHUYỂN BÀN..."; setTimeout(fetchApiAndPredict, 500); });
 
-/* CẬP NHẬT GỬI CHỮ KÝ KHI LẤY DỰ ĐOÁN */
 async function fetchApiAndPredict() {
     const resultBox = document.getElementById("result-box");
     const btn = document.getElementById("btn-auto");
@@ -415,8 +415,9 @@ async function fetchApiAndPredict() {
                 source: source, 
                 seqLength: selectedLen, 
                 invertChain: invertChain,
-                timestamp,
-                signature 
+                timestamp: timestamp,
+                signature: signature,
+                game: selectedGame 
             })
         });
         const predictData = await predictResp.json();
