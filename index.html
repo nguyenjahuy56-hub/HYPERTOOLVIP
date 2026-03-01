@@ -96,6 +96,7 @@
                 <button id="btn-select-lc79" class="btn" style="background:linear-gradient(180deg,#00c853,#00b44a); padding: 14px;">MỞ TOOL LC79</button>
                 <button id="btn-select-xd88" class="btn" style="background:linear-gradient(180deg,#f39c12,#d35400); padding: 14px;">MỞ TOOL XOCDIA88</button>
                 <button id="btn-select-betvip" class="btn" style="background:linear-gradient(180deg,#e11d48,#be123c); padding: 14px;">MỞ TOOL BETVIP</button>
+                <button id="btn-select-sunwin" class="btn" style="background:linear-gradient(180deg,#c2410c,#9a3412); padding: 14px;">MỞ TOOL SUNWIN</button>
             </div>
         </div>
     </div>
@@ -270,6 +271,7 @@ const keyInput = document.getElementById("keyInput");
 const btnSelectLc79 = document.getElementById("btn-select-lc79");
 const btnSelectXd88 = document.getElementById("btn-select-xd88");
 const btnSelectBetvip = document.getElementById("btn-select-betvip");
+const btnSelectSunwin = document.getElementById("btn-select-sunwin");
 const backToGameSelectBtn = document.getElementById("backToGameSelectBtn");
 const gameNameDisplay = document.getElementById("gameNameDisplay");
 const gameNameSub = document.getElementById("gameNameSub");
@@ -296,6 +298,7 @@ let autoRefreshInterval = null;
 btnSelectLc79.addEventListener("click", () => { selectedGame = 'lc79'; gameNameDisplay.innerText = "LC79"; gameNameSub.innerText = "LC79"; hide(gameSelectOverlay); show(entryOverlay); });
 btnSelectXd88.addEventListener("click", () => { selectedGame = 'xd88'; gameNameDisplay.innerText = "XOCDIA88"; gameNameSub.innerText = "XOCDIA88"; hide(gameSelectOverlay); show(entryOverlay); });
 btnSelectBetvip.addEventListener("click", () => { selectedGame = 'betvip'; gameNameDisplay.innerText = "BETVIP"; gameNameSub.innerText = "BETVIP"; hide(gameSelectOverlay); show(entryOverlay); });
+if (btnSelectSunwin) { btnSelectSunwin.addEventListener("click", () => { selectedGame = 'sunwin'; gameNameDisplay.innerText = "SUNWIN"; gameNameSub.innerText = "SUNWIN"; hide(gameSelectOverlay); show(entryOverlay); }); }
 backToGameSelectBtn.addEventListener("click", () => { hide(entryOverlay); show(gameSelectOverlay); keyInput.value = ""; entryMsg.innerText = ""; });
 
 document.getElementById('auto-refresh-checkbox').addEventListener('change', (e) => {
@@ -309,7 +312,6 @@ document.getElementById('auto-refresh-checkbox').addEventListener('change', (e) 
     }
 });
 
-// THÊM: Nếu hết thời gian ở bảng đếm ngược thì TỰ KICK
 function startExpireCountdown(expireTs){
     if(expireTimer) clearInterval(expireTimer);
     function update(){
@@ -318,7 +320,7 @@ function startExpireCountdown(expireTs){
             expireBadge.innerText = "Key: Hết hạn"; 
             clearInterval(expireTimer); 
             showToast("⏳ Key đã hết hạn. Đang đóng tool...", "error");
-            setTimeout(() => location.reload(), 2000); // KICK VỀ TRANG CHỦ
+            setTimeout(() => location.reload(), 2000);
             return; 
         }
         const totalSec = Math.floor(diff/1000);
@@ -365,6 +367,7 @@ function openGameFrame(gameType) {
     if(gameType === 'lc79') { gameFrame.src = "https://lc79b.bet/"; toolTitle.innerText = "🎯 TOOL DỰ ĐOÁN LC79"; } 
     else if(gameType === 'xd88') { gameFrame.src = "https://play.xocdia88.green/"; toolTitle.innerText = "🎯 TOOL DỰ ĐOÁN XOCDIA88"; }
     else if(gameType === 'betvip') { gameFrame.src = "https://play.betvip.fit/"; toolTitle.innerText = "🎯 TOOL DỰ ĐOÁN BETVIP"; }
+    else if(gameType === 'sunwin') { gameFrame.src = "https://web.sunwin.lt/?affId=Sunwin"; toolTitle.innerText = "🎯 TOOL DỰ ĐOÁN SUNWIN"; }
     show(gameFrame);
     setTimeout(()=>{ toolPanel.style.display = "block"; toolPanel.setAttribute("aria-hidden","false"); toggleBtn.style.display = "none"; window.lastDataString = ""; }, 300);
 }
@@ -449,10 +452,8 @@ async function fetchApiAndPredict() {
         } else {
             showToast(`Lỗi: ${predictData.message || 'Lỗi hệ thống.'}`, 'error');
             btn.innerHTML = "🔄 CẬP NHẬT DỮ LIỆU CẦU"; btn.style.opacity = "1"; 
-            
-            // THÊM: KICK NGƯỜI DÙNG KHI CÓ LỆNH TỪ SERVER (bị xóa, hết hạn, ip-lock)
             if (predictData.kicked) {
-                setTimeout(() => { location.reload(); }, 2500); // ĐÁ VĂNG
+                setTimeout(() => { location.reload(); }, 2500); 
             }
             return;
         }
@@ -482,7 +483,7 @@ async function fetchApiAndPredict() {
 
     resultBox.innerHTML = `
         <div class="info-row hide-on-compact" style="min-width:140px;">
-            <div style="color:#aaa; font-size:12px; margin-bottom:4px;">Nguồn: <b>${source === 'md5' ? 'Bàn MD5' : 'Bàn thường'}</b> — Chuỗi ${chuoiN.length} ván:</div>
+            <div style="color:#aaa; font-size:12px; margin-bottom:4px;">Nguồn: <b>${source === 'md5' && selectedGame !== 'sunwin' ? 'Bàn MD5' : 'Bàn thường'}</b> — Chuỗi ${chuoiN.length} ván:</div>
             <div class="seq-text">${chuoiN.join("")}</div>
         </div>
         <div class="info-row hide-on-compact" style="min-width:140px;">
