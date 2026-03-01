@@ -6,91 +6,164 @@
     <title>Tool Auto Dự Đoán VIP - Anti Fake HWID</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
-        :root { --panel-scale: 1; --accent: #3366ff; --glass: rgba(32,36,45,0.6); --card:#0f1720; }
-        html,body { margin:0;padding:0;height:100%;background:#0d0d12;font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;color:#fff; }
-        
-        .overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(2,6,12,0.7), rgba(2,6,12,0.85)); z-index:20000; }
-        .panel-card { width:420px; max-width:94vw; border-radius:14px; padding:22px; box-shadow:0 18px 60px rgba(0,0,0,0.7); background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.04); backdrop-filter: blur(6px); }
-        .panel-card h2 { margin:0 0 6px 0; font-size:18px; text-align:center; text-transform: uppercase; }
-        .sub { font-size:13px; color:#bdbdbd; text-align:center; margin-bottom:12px; }
-        
-        /* CẬP NHẬT BẢNG GIÁ 4 CỘT */
-        .price-grid { display:flex; gap:6px; justify-content:space-between; margin:12px 0; }
-        .price-item { flex:1; background:rgba(255,255,255,0.02); padding:10px 4px; border-radius:8px; text-align:center; font-weight:600; border:1px solid rgba(255,255,255,0.03); }
-        /* ----------------------- */
-        
-        .input-row { display:flex; gap:8px; margin-top:10px; }
-        input[type="text"]{ flex:1;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.45);color:#fff;outline:none; }
-        
-        /* CSS CHO LOGO GAME */
-        .game-logo { width: 28px; height: 28px; margin-right: 10px; vertical-align: middle; border-radius: 6px; object-fit: cover; border: 1px solid rgba(255,255,255,0.2); }
-        .btn { padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:700;background:linear-gradient(180deg,var(--accent),#234ed6); color:#fff; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; }
-        /* ----------------- */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap');
 
-        .btn:hover { opacity: 0.9; }
-        .btn-ghost { background:transparent;border:1px solid rgba(255,255,255,0.06); color:#ddd; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:700; transition: background 0.2s; }
-        .btn-ghost:hover { background: rgba(255,255,255,0.05); }
-        .msg { text-align:center; margin-top:10px; min-height:20px; font-size:14px; }
-        .msg.success { color:#9effc9; }
-        .msg.error { color:#ff9ea6; }
-        .small { font-size:12px;color:#aab; text-align:center; margin-top:8px; }
+        :root { 
+            --panel-scale: 1; 
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --gold: #ffaa00;
+            --bg-dark: #070a10;
+            --bg-glass: rgba(12, 16, 24, 0.85);
+            --border-glass: rgba(0, 243, 255, 0.25);
+        }
+        
+        * { box-sizing: border-box; }
+        
+        html,body { margin:0;padding:0;height:100%;background:var(--bg-dark);font-family: 'Rajdhani', sans-serif;color:#fff; overflow: hidden; }
+        
+        /* HIỆU ỨNG NỀN KHI Ở NGOÀI GAME */
+        .overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background: radial-gradient(circle at center, #111827 0%, #020617 100%); z-index:20000; }
+        
+        /* CARD ĐĂNG NHẬP VIP */
+        .panel-card { width:440px; max-width:94vw; border-radius:16px; padding:30px; box-shadow: 0 0 40px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 243, 255, 0.05); background: var(--bg-glass); border: 1px solid var(--border-glass); backdrop-filter: blur(15px); position: relative; overflow: hidden; }
+        .panel-card::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, rgba(0, 243, 255, 0.1), transparent 30%); animation: rotate 4s linear infinite; pointer-events: none; z-index: -1; }
+        @keyframes rotate { 100% { transform: rotate(1turn); } }
+        
+        .panel-card h2 { margin:0 0 10px 0; font-size:22px; text-align:center; text-transform: uppercase; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; color: var(--neon-blue); text-shadow: 0 0 10px rgba(0,243,255,0.5); display:flex; align-items:center; justify-content:center; }
+        .sub { font-size:15px; color:#9ca3af; text-align:center; margin-bottom:10px; font-weight: 500; }
+        
+        /* --------------------------------------------------- */
+        /* CSS MỚI: GRID 2x2 CHO MÀN HÌNH CHỌN GAME CHUẨN APP */
+        /* --------------------------------------------------- */
+        .game-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 25px; }
+        
+        .btn-game { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 25px 10px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); color: #fff; font-weight: 700; font-family: 'Orbitron', sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.4); text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        .btn-game::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; }
+        
+        .btn-game img { width: 52px; height: 52px; margin-bottom: 12px; border-radius: 14px; border: 2px solid rgba(255,255,255,0.9); box-shadow: 0 5px 15px rgba(0,0,0,0.6); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); object-fit: cover; }
+        
+        .btn-game:hover { transform: translateY(-5px); border-color: var(--neon-blue); box-shadow: 0 12px 25px rgba(0, 243, 255, 0.3); }
+        .btn-game:hover img { transform: scale(1.15) translateY(-2px); border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 243, 255, 0.8); }
+        .btn-game:hover::after { left: 200%; transition: 0.7s; }
 
+        .bg-lc79 { background: linear-gradient(135deg, #064e3b, #10b981); }
+        .bg-xd88 { background: linear-gradient(135deg, #78350f, #f59e0b); }
+        .bg-betvip { background: linear-gradient(135deg, #881337, #e11d48); }
+        .bg-sunwin { background: linear-gradient(135deg, #7c2d12, #ea580c); }
+        /* --------------------------------------------------- */
+
+
+        /* BẢNG GIÁ VIP */
+        .price-grid { display:flex; gap:6px; justify-content:space-between; margin:20px 0; }
+        .price-item { flex:1; background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.5)); padding:12px 4px; border-radius:10px; text-align:center; border:1px solid rgba(255,170,0,0.3); box-shadow: inset 0 0 10px rgba(255,170,0,0.05); transition: transform 0.2s; }
+        .price-item:hover { transform: translateY(-3px); border-color: var(--gold); box-shadow: 0 5px 15px rgba(255,170,0,0.2); }
+        .price-item div:first-child { font-size:16px; color:var(--gold); font-family: 'Orbitron', sans-serif; font-weight: bold; text-shadow: 0 0 5px rgba(255,170,0,0.5); }
+        .price-item div:last-child { font-size:12px; color:#cbd5e1; margin-top: 4px; text-transform: uppercase; }
+        
+        .input-row { display:flex; gap:10px; margin-top:10px; }
+        input[type="text"]{ flex:1; padding:14px; border-radius:10px; border:1px solid rgba(0,243,255,0.4); background: rgba(0,0,0,0.6); color:#fff; outline:none; font-family: 'Orbitron', sans-serif; letter-spacing: 2px; font-size: 14px; transition: all 0.3s; }
+        input[type="text"]:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0,243,255,0.3); }
+        input[type="text"]::placeholder { color: #4b5563; letter-spacing: 0; font-family: 'Rajdhani', sans-serif; }
+        
+        /* NÚT BẤM CHÍNH TRONG MÀN NHẬP KEY */
+        .btn { padding:14px 20px; border-radius:10px; border:none; cursor:pointer; font-weight:700; font-size: 15px; color:#fff; transition: all 0.3s; display: flex; align-items: center; justify-content: center; text-transform: uppercase; letter-spacing: 1px; font-family: 'Orbitron', sans-serif; position: relative; overflow: hidden; z-index: 1; }
+        .btn-check { background: linear-gradient(90deg, #0055ff, #00aaff); box-shadow: 0 4px 15px rgba(0, 170, 255, 0.4); }
+        .btn-check:hover { background: linear-gradient(90deg, #00aaff, #00f3ff); box-shadow: 0 6px 20px rgba(0, 243, 255, 0.6); transform: scale(1.02); }
+        
+        .btn-ghost { background:transparent; border:1px solid rgba(255,255,255,0.1); color:#9ca3af; padding:12px; border-radius:10px; cursor:pointer; font-weight:600; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-ghost:hover { background: rgba(255,255,255,0.05); color: #fff; border-color: rgba(255,255,255,0.3); }
+        
+        .msg { text-align:center; margin-top:15px; min-height:20px; font-size:15px; font-weight: bold; }
+        .msg.success { color:#34d399; text-shadow: 0 0 8px rgba(52,211,153,0.5); }
+        .msg.error { color:#f87171; text-shadow: 0 0 8px rgba(248,113,113,0.5); }
+        .small { font-size:13px; color:#6b7280; text-align:center; margin-top:10px; margin-bottom: 15px;}
+
+        /* FRAME GAME VÀ NÚT MỞ TOOL */
         #game-frame { width:100%; height:100vh; border: none; display:block; filter:none; }
-        #toggle-tool { position:fixed; top:15px; right:15px; z-index:10000; padding:10px 14px; background:var(--accent); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; display:none; }
-        #tool-panel { position:absolute; top:15px; right:15px; width:340px; min-width:240px; min-height:120px; background: rgba(20, 24, 34, 0.95); color: #fff; padding: 0; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.8); border: 1px solid #333; z-index:9999; overflow: hidden; backdrop-filter: blur(10px); resize: both; transform-origin: top right; transform: scale(var(--panel-scale)); touch-action:none; display:none; }
-        #tool-panel.horizontal { width: 560px; }
+        #toggle-tool { position:fixed; top:15px; right:15px; z-index:10000; padding:12px 18px; background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue)); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; display:none; font-family: 'Orbitron', sans-serif; box-shadow: 0 0 20px rgba(0, 243, 255, 0.5); text-transform: uppercase; letter-spacing: 1px; animation: pulse-btn 2s infinite; }
+        @keyframes pulse-btn { 0% { box-shadow: 0 0 10px rgba(0,243,255,0.4); } 50% { box-shadow: 0 0 25px rgba(0,243,255,0.8); } 100% { box-shadow: 0 0 10px rgba(0,243,255,0.4); } }
+
+        /* PANEL TOOL NỔI */
+        #tool-panel { position:absolute; top:15px; right:15px; width:360px; min-width:260px; min-height:150px; background: var(--bg-glass); color: #fff; padding: 0; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.9), inset 0 0 15px rgba(0,243,255,0.1); border: 1px solid var(--border-glass); z-index:9999; overflow: hidden; backdrop-filter: blur(12px); resize: both; transform-origin: top right; transform: scale(var(--panel-scale)); touch-action:none; display:none; font-family: 'Rajdhani', sans-serif; }
+        #tool-panel.horizontal { width: 580px; }
         #tool-panel.horizontal .pred-grid { grid-template-columns: 1fr 1fr 1fr; }
         #tool-panel.horizontal .pred-final { grid-column: span 1; }
 
-        @keyframes flash-border { 0% { border-color: #ffd700; box-shadow: 0 0 5px rgba(255,215,0,0.2); } 50% { border-color: #ff4d4d; box-shadow: 0 0 15px rgba(255,77,77,0.8); } 100% { border-color: #ffd700; box-shadow: 0 0 5px rgba(255,215,0,0.2); } }
-        #tool-panel.compact-mode { width: 250px !important; min-width: 200px; }
-        #tool-panel.compact-mode #panel-settings, #tool-panel.compact-mode .hide-on-compact { display: none !important; }
-        #tool-panel.compact-mode .pred-grid { display: flex; flex-direction: column; gap: 6px; }
-        #tool-panel.compact-mode .pred-box { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-radius: 6px; }
-        #tool-panel.compact-mode .pred-title { font-size: 11px; text-align: left; margin: 0; color: #ccc; }
-        #tool-panel.compact-mode .pred-value { font-size: 14px; font-weight: 800; }
-        #tool-panel.compact-mode .pred-final { background: linear-gradient(90deg, #2a2a3a, #1a1e29); border: 1px solid #ffd700; animation: flash-border 1.2s infinite; }
-        #tool-panel.compact-mode .warn-box { font-size: 10px; padding: 6px; margin-bottom: 6px; text-align: center; }
-
-        .panel-header { background: linear-gradient(90deg, #ff3333, var(--accent)); padding:12px; display:flex; justify-content:space-between; align-items:center; gap:8px; border-top-left-radius:12px; border-top-right-radius:12px; }
-        .header-left { display:flex; gap:8px; align-items:center; }
-        .header-title { font-weight:700; text-transform: uppercase; }
-        .expire-badge { font-size:12px; background:rgba(255,255,255,0.05); padding:6px 8px; border-radius:8px; color:#ffd; }
-        .panel-body { padding:12px; overflow:auto; max-height:calc(100% - 56px); display:flex; flex-direction:column; gap:12px; }
-        #btn-auto{ width:100%; padding:12px; background:linear-gradient(180deg,#ffd700,#ffaa00); color:#000; font-weight:700; border:none; border-radius:8px; cursor:pointer; }
-        .select-row { display:flex; gap:8px; align-items:center; }
-        .seq-text{ letter-spacing:3px; font-family:monospace; color:#ffd700; font-weight:700; }
-
-        .info-row { background:#1a1e29;padding:10px;border-radius:8px;font-size:14px;border:1px solid #2a2f3a; }
-        .bar-container { width:100%;height:28px;background:#222;border-radius:12px;display:flex;overflow:hidden;border:1px solid #444; }
-        .bar-tai { height:100%;display:flex;align-items:center;padding-left:10px;background:#ff4d4d;color:#000; transition: width 0.5s ease-in-out; }
-        .bar-xiu { height:100%;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;background:#4da6ff;color:#000; transition: width 0.5s ease-in-out; }
+        @keyframes flash-vip { 0% { border-color: var(--gold); box-shadow: 0 0 10px rgba(255,170,0,0.3); } 50% { border-color: #ff3333; box-shadow: 0 0 25px rgba(255,51,51,0.9); } 100% { border-color: var(--gold); box-shadow: 0 0 10px rgba(255,170,0,0.3); } }
         
-        .pred-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-        .pred-box{background:#1a1e29;padding:10px;border-radius:8px;text-align:center;border:1px solid #333;}
-        .pred-final{grid-column:span 2;background:linear-gradient(45deg,#2a2a3a,#1a1e29);border:1px solid #ffd700;padding:12px;}
-        .hint-box{text-align:center;font-size:14px;color:#fff;background:rgba(255,255,255,0.03);padding:8px;border-radius:6px;}
+        #tool-panel.compact-mode { width: 260px !important; min-width: 220px; }
+        #tool-panel.compact-mode #panel-settings, #tool-panel.compact-mode .hide-on-compact { display: none !important; }
+        #tool-panel.compact-mode .pred-grid { display: flex; flex-direction: column; gap: 8px; }
+        #tool-panel.compact-mode .pred-box { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-radius: 8px; }
+        #tool-panel.compact-mode .pred-title { font-size: 13px; text-align: left; margin: 0; color: #9ca3af; font-family: 'Rajdhani', sans-serif; }
+        #tool-panel.compact-mode .pred-value { font-size: 18px; font-weight: 900; font-family: 'Orbitron', sans-serif; }
+        #tool-panel.compact-mode .pred-final { background: linear-gradient(90deg, rgba(255,170,0,0.1), rgba(255,51,51,0.1)); border: 1px solid var(--gold); animation: flash-vip 1.5s infinite; }
+        #tool-panel.compact-mode .warn-box { font-size: 12px; padding: 8px; margin-bottom: 8px; text-align: center; font-weight: bold; }
 
-        .control-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-        .tiny { font-size:12px; color:#cfcfcf; }
-        .toggle-btn { padding:6px 8px; border-radius:8px; border:1px solid #444; background:transparent; color:#fff; cursor:pointer; }
-        .toggle-btn.active { background:#2a2a3a; border-color:#888; }
+        .panel-header { background: linear-gradient(90deg, #0f172a, #1e1b4b); padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:8px; border-bottom: 2px solid var(--neon-purple); cursor: grab; }
+        .panel-header:active { cursor: grabbing; }
+        .header-left { display:flex; gap:8px; align-items:center; }
+        .header-title { font-weight:900; text-transform: uppercase; font-family: 'Orbitron', sans-serif; color: #fff; text-shadow: 0 0 8px rgba(255,255,255,0.5); font-size: 15px;}
+        .expire-badge { font-size:12px; background:rgba(0,0,0,0.5); padding:6px 10px; border-radius:6px; color:var(--neon-blue); border: 1px solid rgba(0,243,255,0.3); font-weight: 600; font-family: 'Orbitron', sans-serif;}
+        
+        .controls button { background: transparent; border: none; color: #9ca3af; cursor: pointer; font-size: 16px; padding: 4px; transition: color 0.2s; }
+        .controls button:hover { color: #fff; text-shadow: 0 0 5px #fff; }
+        
+        .panel-body { padding:16px; overflow:auto; max-height:calc(100% - 60px); display:flex; flex-direction:column; gap:14px; }
+        #btn-auto{ width:100%; padding:14px; background:linear-gradient(90deg, #ffaa00, #ff5500); color:#000; font-weight:900; border:none; border-radius:10px; cursor:pointer; font-family: 'Orbitron', sans-serif; font-size: 14px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(255,170,0,0.4); transition: all 0.2s; }
+        #btn-auto:hover { filter: brightness(1.1); box-shadow: 0 6px 20px rgba(255,170,0,0.6); }
+        
+        .select-row { display:flex; gap:10px; align-items:center; font-size: 14px; font-weight: 600; color: #cbd5e1; }
+        select { background: rgba(0,0,0,0.5); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 6px; outline: none; font-family: 'Rajdhani', sans-serif; font-weight: bold; }
+        .seq-text{ letter-spacing:4px; font-family:'Orbitron', monospace; color:var(--gold); font-weight:700; font-size: 15px; text-shadow: 0 0 5px rgba(255,170,0,0.5); }
+
+        .info-row { background: rgba(0,0,0,0.4); padding:12px; border-radius:10px; font-size:15px; border:1px solid rgba(255,255,255,0.05); box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        
+        /* THANH TỈ LỆ % */
+        .bar-container { width:100%; height:32px; background:#111827; border-radius:16px; display:flex; overflow:hidden; border:2px solid #374151; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .bar-tai { height:100%; display:flex; align-items:center; padding-left:12px; background:linear-gradient(90deg, #991b1b, #ef4444); color:#fff; font-weight: bold; font-family: 'Orbitron', sans-serif; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: inset -5px 0 10px rgba(0,0,0,0.2); }
+        .bar-xiu { height:100%; display:flex; align-items:center; justify-content:flex-end; padding-right:12px; background:linear-gradient(90deg, #0369a1, #3b82f6); color:#fff; font-weight: bold; font-family: 'Orbitron', sans-serif; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: inset 5px 0 10px rgba(0,0,0,0.2); }
+        
+        .pred-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .pred-box{ background: rgba(0,0,0,0.5); padding:14px 10px; border-radius:10px; text-align:center; border:1px solid rgba(255,255,255,0.08); box-shadow: inset 0 0 15px rgba(0,0,0,0.4); }
+        .pred-title { font-size: 12px; color: #9ca3af; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 6px; }
+        .pred-value { font-size: 22px; font-family: 'Orbitron', sans-serif; font-weight: 900; }
+        
+        .pred-final{ grid-column:span 2; background:linear-gradient(135deg, rgba(30,27,75,0.8), rgba(15,23,42,0.9)); border:1px solid var(--gold); padding:16px; position: relative; overflow: hidden; }
+        .pred-final::after { content:''; position:absolute; top:0; left:-100%; width:50%; height:100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); animation: shine 3s infinite; }
+        @keyframes shine { 100% { left: 200%; } }
+        
+        .color-tai { color: #f87171; text-shadow: 0 0 10px rgba(248,113,113,0.6); }
+        .color-xiu { color: #60a5fa; text-shadow: 0 0 10px rgba(96,165,250,0.6); }
+
+        .hint-box{ text-align:center; font-size:15px; color:#fff; background:rgba(255,170,0,0.1); padding:10px; border-radius:8px; border: 1px dashed rgba(255,170,0,0.3); }
+
+        .control-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top: 4px; }
+        .tiny { font-size:13px; color:#9ca3af; font-weight: 500; }
+        .tiny label { cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .toggle-btn { padding:8px 12px; border-radius:8px; border:1px solid #4b5563; background:rgba(0,0,0,0.4); color:#d1d5db; cursor:pointer; font-family: 'Rajdhani', sans-serif; font-weight: bold; transition: all 0.2s; }
+        .toggle-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .toggle-btn.active { background:var(--neon-blue); color:#000; border-color:var(--neon-blue); box-shadow: 0 0 10px rgba(0,243,255,0.4); }
 
         #toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100000; pointer-events: none; }
-        .toast { background: rgba(20, 24, 34, 0.95); color: #fff; padding: 12px 20px; border-radius: 8px; border-left: 4px solid #3366ff; box-shadow: 0 4px 12px rgba(0,0,0,0.5); font-size: 14px; animation: toast-in 0.3s forwards, toast-out 0.3s forwards 3s; }
-        .toast.error { border-left-color: #ff4d4d; }
-        .toast.success { border-left-color: #00c853; }
-        @keyframes toast-in { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+        .toast { background: var(--bg-glass); color: #fff; padding: 14px 24px; border-radius: 10px; border-left: 4px solid var(--neon-blue); box-shadow: 0 8px 25px rgba(0,0,0,0.8); font-size: 15px; font-weight: 600; font-family: 'Rajdhani', sans-serif; backdrop-filter: blur(10px); animation: toast-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, toast-out 0.4s forwards 3s; }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.success { border-left-color: #10b981; }
+        @keyframes toast-in { from { opacity: 0; transform: translateX(100%) scale(0.9); } to { opacity: 1; transform: translateX(0) scale(1); } }
         @keyframes toast-out { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(100%); } }
 
         @media (max-width:720px) {
-            #toggle-tool { right:12px; top:12px; }
+            #toggle-tool { right:12px; top:12px; padding: 10px 14px; font-size: 12px; }
             #tool-panel{ left:8px; right:8px; width:auto; min-width:auto; transform-origin:top center; }
             #tool-panel.horizontal { width: auto; }
             #tool-panel.horizontal .pred-grid { grid-template-columns: 1fr 1fr; }
             #tool-panel.horizontal .pred-final { grid-column: span 2; }
-            .panel-body{ padding:10px; max-height:60vh; }
+            .panel-body{ padding:12px; max-height:65vh; }
             .price-item { font-size: 11px; padding: 8px 2px; }
+            .game-grid { gap: 10px; }
+            .btn-game { padding: 15px 5px; font-size: 12px;}
+            .btn-game img { width: 40px; height: 40px; }
         }
     </style>
 </head>
@@ -100,56 +173,63 @@
 
     <div id="gameSelectOverlay" class="overlay" role="dialog" aria-modal="true">
         <div class="panel-card" role="document">
-            <h2>🎮 CHỌN GAME SỬ DỤNG TOOL</h2>
-            <div class="sub">Vui lòng chọn cổng game bạn muốn dự đoán</div>
-            <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px;">
-                <button id="btn-select-lc79" class="btn" style="background:linear-gradient(180deg,#00c853,#00b44a); padding: 14px;">
-                    <img src="https://i.postimg.cc/NGKy82K4/lc79.webp" class="game-logo" alt="LC79"> MỞ TOOL LC79
+            <h2>HỆ THỐNG DỰ ĐOÁN VIP</h2>
+            <div class="sub">Chọn cổng game mà bạn muốn dự đoán</div>
+            
+            <div class="game-grid">
+                <button id="btn-select-lc79" class="btn-game bg-lc79">
+                    <img src="https://i.postimg.cc/NGKy82K4/lc79.webp" alt="LC79">
+                    <span>MỞ TOOL LC79</span>
                 </button>
-                <button id="btn-select-xd88" class="btn" style="background:linear-gradient(180deg,#f39c12,#d35400); padding: 14px;">
-                    <img src="https://i.postimg.cc/wMCkTgVs/xocdia88.png" class="game-logo" alt="XOCDIA88"> MỞ TOOL XOCDIA88
+                <button id="btn-select-xd88" class="btn-game bg-xd88">
+                    <img src="https://i.postimg.cc/wMCkTgVs/xocdia88.png" alt="XOCDIA88">
+                    <span>MỞ TOOL XOCDIA88</span>
                 </button>
-                <button id="btn-select-betvip" class="btn" style="background:linear-gradient(180deg,#e11d48,#be123c); padding: 14px;">
-                    <img src="https://i.postimg.cc/Nj4NDCNW/betvip.webp" class="game-logo" alt="BETVIP"> MỞ TOOL BETVIP
+                <button id="btn-select-betvip" class="btn-game bg-betvip">
+                    <img src="https://i.postimg.cc/Nj4NDCNW/betvip.webp" alt="BETVIP">
+                    <span>MỞ TOOL BETVIP</span>
                 </button>
-                <button id="btn-select-sunwin" class="btn" style="background:linear-gradient(180deg,#c2410c,#9a3412); padding: 14px;">
-                    <img src="https://i.postimg.cc/y6wrZ8xx/IMG-7874.jpg" class="game-logo" alt="SUNWIN"> MỞ TOOL SUNWIN
+                <button id="btn-select-sunwin" class="btn-game bg-sunwin">
+                    <img src="https://i.postimg.cc/y6wrZ8xx/IMG-7874.jpg" alt="SUNWIN">
+                    <span>MỞ TOOL SUNWIN</span>
                 </button>
             </div>
+            
         </div>
     </div>
 
     <div id="entryOverlay" class="overlay" role="dialog" aria-modal="true" style="display:none;">
         <div class="panel-card" role="document">
-            <h2 id="entryTitle">🔐 Kích hoạt VIP - <span id="gameNameDisplay" style="color:#ffd700; margin-left: 6px;"></span></h2>
-            <div class="sub">Nhập key dành riêng cho <span id="gameNameSub"></span>. Bảng giá:</div>
+            <h2 id="entryTitle">XÁC THỰC KEY VIP <span id="gameNameDisplay" style="color:var(--neon-blue); margin-left: 8px; text-shadow: 0 0 10px rgba(0,243,255,0.6);"></span></h2>
+            <div class="sub">Nhập mã Key truy cập máy chủ <span id="gameNameSub" style="font-weight:bold; color:#fff;"></span></div>
 
             <div class="price-grid" aria-hidden="false">
-                <div class="price-item"><div style="font-size:14px;color:#ffd;">19k</div><div style="font-size:11px;color:#bdbdbd">1 Ngày</div></div>
-                <div class="price-item"><div style="font-size:14px;color:#ffd;">49k</div><div style="font-size:11px;color:#bdbdbd">7 Ngày</div></div>
-                <div class="price-item"><div style="font-size:14px;color:#ffd;">99k</div><div style="font-size:11px;color:#bdbdbd">30 Ngày</div></div>
-                <div class="price-item"><div style="font-size:14px;color:#ffd;">199k</div><div style="font-size:11px;color:#bdbdbd">Vĩnh viễn</div></div>
+                <div class="price-item"><div>19K</div><div>1 Ngày</div></div>
+                <div class="price-item"><div>49K</div><div>7 Ngày</div></div>
+                <div class="price-item"><div>99K</div><div>30 Ngày</div></div>
+                <div class="price-item" style="border-color: var(--neon-purple); box-shadow: inset 0 0 15px rgba(188,19,254,0.1);">
+                    <div style="color: var(--neon-purple); text-shadow: 0 0 5px rgba(188,19,254,0.5);">199K</div><div>Vĩnh viễn</div>
+                </div>
             </div>
 
             <div style="margin-top:6px">
-                <label class="small">Nhập Key</label>
                 <div class="input-row">
-                    <input id="keyInput" type="text" placeholder="Nhập key của bạn..." autocomplete="off" />
-                    <button id="checkBtn" class="btn">KIỂM TRA</button>
+                    <input id="keyInput" type="text" placeholder="Nhập Key định dạng KEY-XXXX..." autocomplete="off" />
+                    <button id="checkBtn" class="btn btn-check">KIỂM TRA</button>
                 </div>
                 <div id="entryMsg" class="msg"></div>
-                <div class="small" style="margin-bottom: 10px;">Lưu ý: key chỉ dùng cho 1 thiết bị trên game này.</div>
-                <button id="backToGameSelectBtn" class="btn-ghost" style="width:100%;">⬅ Quay lại chọn game</button>
+                <div class="small" style="margin-bottom: 15px;">⚠️ HWID SECURE: Key sẽ bị khóa vĩnh viễn theo thiết bị hiện tại.</div>
+                <button id="backToGameSelectBtn" class="btn-ghost" style="width:100%;">⬅ CHỌN LẠI SERVER GAME</button>
             </div>
         </div>
     </div>
 
     <iframe id="game-frame" src="about:blank" style="width:100%;height:100vh;border:0;display:none;"></iframe>
-    <button id="toggle-tool" onclick="togglePanel()">MỞ TOOL</button>
+    <button id="toggle-tool" onclick="togglePanel()">⚙ MỞ MENU TOOL</button>
 
     <div id="tool-panel" aria-hidden="true">
         <div class="panel-header" id="panel-header">
-            <div class="header-left"><div class="header-title" id="tool-title">🎯 TOOL DỰ ĐOÁN</div></div>
+            <div class="header-left"><div class="header-title" id="tool-title">⚡ VIP PREDICTOR</div></div>
             <div style="display:flex;align-items:center;gap:8px">
                 <div id="expireBadge" class="expire-badge" title="Thời hạn key">Key: --</div>
                 <div class="controls">
@@ -164,49 +244,49 @@
         </div>
 
         <div class="panel-body" id="panel-body">
-            <div style="flex: 0 0 100%;"><button id="btn-auto" onclick="fetchApiAndPredict()">🔄 CẬP NHẬT DỮ LIỆU CẦU</button></div>
+            <div style="flex: 0 0 100%;"><button id="btn-auto" onclick="fetchApiAndPredict()">🔄 KÍCH HOẠT QUÉT CẦU</button></div>
 
             <div id="panel-settings" style="display:flex; flex-direction:column; gap:12px;">
                 <div class="select-row">
-                    <label>Độ dài chuỗi:</label>
+                    <label>Chuỗi phân tích:</label>
                     <select id="seq-length-select">
-                        <option value="11">11</option><option value="12">12</option><option value="13" selected>13</option><option value="14">14</option>
+                        <option value="11">11 Tay</option><option value="12">12 Tay</option><option value="13" selected>13 Tay (Chuẩn)</option><option value="14">14 Tay</option>
                     </select>
                 </div>
                 <div class="select-row">
-                    <label>Chọn bàn:</label>
+                    <label>Luồng Dữ liệu:</label>
                     <select id="api-source-select">
-                        <option value="normal">Bàn thường</option><option value="md5">Bàn MD5</option>
+                        <option value="normal">Server Thường</option><option value="md5">Server MD5</option>
                     </select>
                 </div>
                 <div class="control-row tiny">
-                    <label><input type="checkbox" id="skip-dice-checkbox" /> Bỏ phân tích xúc xắc</label>
-                    <label><input type="checkbox" id="hide-suggestion-checkbox" /> Ẩn gợi ý đánh</label>
+                    <label><input type="checkbox" id="skip-dice-checkbox" /> Tắt phân tích Xúc Xắc</label>
+                    <label><input type="checkbox" id="hide-suggestion-checkbox" /> Ẩn thông báo Nhúng</label>
                 </div>
                 <div class="control-row tiny">
-                    <label><input type="checkbox" id="auto-refresh-checkbox" /> Tự động cập nhật (10s)</label>
-                    <label><input type="checkbox" id="sound-alert-checkbox" checked /> Âm thanh thông báo</label>
+                    <label><input type="checkbox" id="auto-refresh-checkbox" /> Auto Get (10s/lần)</label>
+                    <label><input type="checkbox" id="sound-alert-checkbox" checked /> Âm thanh Cảnh báo</label>
                 </div>
 
-                <button id="btn-advanced-toggle" class="toggle-btn" style="width:100%;">⚙ Nâng cao</button>
+                <button id="btn-advanced-toggle" class="toggle-btn" style="width:100%; border-color: var(--neon-purple); color: var(--neon-purple);">🛠️ THIẾT LẬP NÂNG CAO</button>
 
-                <div id="advanced-section" style="display:none;">
-                    <div class="control-row tiny">
-                        <label><input type="checkbox" id="invert-chain-checkbox" /> Bẻ phân tích chuỗi</label>
-                        <label><input type="checkbox" id="invert-final-checkbox" /> Bẻ kết quả tổng hợp</label>
+                <div id="advanced-section" style="display:none; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="control-row tiny" style="margin-bottom: 8px;">
+                        <label><input type="checkbox" id="invert-chain-checkbox" /> Đảo ngược Chuỗi Thuật toán</label>
+                        <label><input type="checkbox" id="invert-final-checkbox" /> Đảo ngược Kết quả Cuối</label>
                     </div>
                     <div class="control-row">
-                        <button id="btn-invert-all" class="toggle-btn">Đảo cầu (Toàn bộ)</button>
-                        <button id="btn-invert-chain" class="toggle-btn">Đảo cầu (Chỉ chuỗi)</button>
+                        <button id="btn-invert-all" class="toggle-btn" style="flex: 1;">Bẻ Cầu Toàn Diện</button>
+                        <button id="btn-invert-chain" class="toggle-btn" style="flex: 1;">Bẻ Mạch Chuỗi</button>
                     </div>
                 </div>
 
                 <div class="select-row" style="align-items:flex-start; gap:10px;">
-                    <label style="align-self:flex-start;">Chú thích:</label>
-                    <textarea id="annotation-input" rows="2" style="flex:1; padding:8px; border-radius:8px; background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.04); color:#fff; resize:vertical;" placeholder="Thêm ghi chú..."></textarea>
+                    <label style="align-self:flex-start; margin-top: 8px;">Ghi nhớ:</label>
+                    <textarea id="annotation-input" rows="2" style="flex:1; padding:10px; border-radius:8px; background:rgba(0,0,0,0.6); border:1px solid rgba(0,243,255,0.2); color:#fff; resize:vertical; font-family: 'Rajdhani', sans-serif;" placeholder="Nhập ghi chú tay cầu..."></textarea>
                 </div>
             </div>
-            <div id="result-box" style="flex:1 1 auto;"><div style="text-align:center;color:#888;padding:20px 0;"><i>Chưa có dữ liệu. Hãy bấm cập nhật...</i></div></div>
+            <div id="result-box" style="flex:1 1 auto;"><div style="text-align:center;color:#6b7280;padding:30px 0; font-family: 'Orbitron', sans-serif; letter-spacing: 1px;"><i>ĐANG CHỜ LỆNH QUÉT...</i></div></div>
         </div>
     </div>
 
@@ -336,15 +416,16 @@ function startExpireCountdown(expireTs){
     function update(){
         const now = Date.now(); const diff = expireTs - now;
         if(diff <= 0){ 
-            expireBadge.innerText = "Key: Hết hạn"; 
+            expireBadge.innerText = "HẾT HẠN"; 
+            expireBadge.style.color = "#f87171";
             clearInterval(expireTimer); 
-            showToast("⏳ Key đã hết hạn. Đang đóng tool...", "error");
+            showToast("⏳ MÃ KEY ĐÃ HẾT HẠN. NGẮT KẾT NỐI...", "error");
             setTimeout(() => location.reload(), 2000);
             return; 
         }
         const totalSec = Math.floor(diff/1000);
         const days = Math.floor(totalSec / 86400), hours = Math.floor((totalSec % 86400) / 3600), mins = Math.floor((totalSec % 3600) / 60);
-        expireBadge.innerText = "Key expires: " + (days>0? days+"d ":"") + String(hours).padStart(2,"0")+":"+String(mins).padStart(2,"0");
+        expireBadge.innerText = (days>0? days+"D ":"") + String(hours).padStart(2,"0")+":"+String(mins).padStart(2,"0");
     } 
     update(); 
     expireTimer = setInterval(update, 1000);
@@ -352,8 +433,8 @@ function startExpireCountdown(expireTs){
 
 async function checkKeyFlow(){
     const key = (keyInput.value || "").trim();
-    if(!key){ entryMsg.className="msg error"; entryMsg.innerText="Vui lòng nhập key"; return; }
-    entryMsg.className="msg"; entryMsg.innerText="Đang kiểm tra..."; checkBtn.disabled = true;
+    if(!key){ entryMsg.className="msg error"; entryMsg.innerText="! CHƯA NHẬP KEY KHỚP LỆNH"; return; }
+    entryMsg.className="msg"; entryMsg.innerText="ĐANG GIẢI MÃ BẢO MẬT..."; checkBtn.disabled = true;
     try{
         const hwid = await getHWID(); 
         const timestamp = Date.now();
@@ -368,25 +449,25 @@ async function checkKeyFlow(){
         if(data && data.success){
             sessionToken = data.token;
             currentKey = key;
-            if(data.expire) startExpireCountdown(data.expire); else expireBadge.innerText = "Key: (no expire)";
+            if(data.expire) startExpireCountdown(data.expire); else expireBadge.innerText = "VIP ∞";
             
             entryMsg.className = "msg success";
-            entryMsg.innerText = `✅ Key hợp lệ cho ${selectedGame.toUpperCase()}. Đang mở game...`;
-            setTimeout(()=> { hide(entryOverlay); openGameFrame(selectedGame); }, 800);
+            entryMsg.innerText = `✔️ XÁC THỰC THÀNH CÔNG [${selectedGame.toUpperCase()}]. ĐANG CHÈN SCRIPT...`;
+            setTimeout(()=> { hide(entryOverlay); openGameFrame(selectedGame); }, 1200);
         } else {
-            entryMsg.className="msg error"; entryMsg.innerText = data && data.message ? ("❌ " + data.message) : "Key không hợp lệ hoặc sai game";
+            entryMsg.className="msg error"; entryMsg.innerText = data && data.message ? ("❌ " + data.message) : "LỖI: KEY KHÔNG HỢP LỆ / SAI SERVER";
         }
-    }catch(err){ entryMsg.className="msg error"; entryMsg.innerText = "Lỗi kết nối server"; } finally { checkBtn.disabled = false; }
+    }catch(err){ entryMsg.className="msg error"; entryMsg.innerText = "LỖI MẠNG: KHÔNG THỂ KẾT NỐI MÁY CHỦ"; } finally { checkBtn.disabled = false; }
 }
 
 keyInput.addEventListener("keydown", (e) => { if(e.key === "Enter") checkKeyFlow(); });
 checkBtn.addEventListener("click", checkKeyFlow);
 
 function openGameFrame(gameType) {
-    if(gameType === 'lc79') { gameFrame.src = "https://lc79b.bet/"; toolTitle.innerText = "🎯 TOOL DỰ ĐOÁN LC79"; } 
-    else if(gameType === 'xd88') { gameFrame.src = "https://play.xocdia88.green/"; toolTitle.innerText = "🎯 TOOL DỰ ĐOÁN XOCDIA88"; }
-    else if(gameType === 'betvip') { gameFrame.src = "https://play.betvip.fit/"; toolTitle.innerText = "🎯 TOOL DỰ ĐOÁN BETVIP"; }
-    else if(gameType === 'sunwin') { gameFrame.src = "https://web.sunwin.lt/?affId=Sunwin"; toolTitle.innerText = "🎯 TOOL DỰ ĐOÁN SUNWIN"; }
+    if(gameType === 'lc79') { gameFrame.src = "https://lc79b.bet/"; toolTitle.innerText = "⚡ LC79 PREDICTOR"; } 
+    else if(gameType === 'xd88') { gameFrame.src = "https://play.xocdia88.green/"; toolTitle.innerText = "⚡ XD88 PREDICTOR"; }
+    else if(gameType === 'betvip') { gameFrame.src = "https://play.betvip.fit/"; toolTitle.innerText = "⚡ BETVIP PREDICTOR"; }
+    else if(gameType === 'sunwin') { gameFrame.src = "https://web.sunwin.lt/?affId=Sunwin"; toolTitle.innerText = "⚡ SUNWIN PREDICTOR"; }
     show(gameFrame);
     setTimeout(()=>{ toolPanel.style.display = "block"; toolPanel.setAttribute("aria-hidden","false"); toggleBtn.style.display = "none"; window.lastDataString = ""; }, 300);
 }
@@ -398,12 +479,12 @@ function togglePanel(){
 
 document.querySelector(".close-btn").addEventListener("click", ()=> { togglePanel(); });
 
-const GOI_Y_NGUONG = [ [90, "Rất tự tin đặt"], [70, "Nên đặt"], [60, "Cân nhắc"] ];
+const GOI_Y_NGUONG = [ [90, "ALL IN (MAX VIP)"], [70, "VÀO TIỀN (SAFE)"], [60, "TEST NHẸ (RISK)"] ];
 function goiYDat(du_doan, percent) {
-    if(du_doan === "Không rõ") return "Bỏ qua";
+    if(du_doan === "Không rõ") return "SKIP (BỎ QUA)";
     for (let i = 0; i < GOI_Y_NGUONG.length; i++) {
-        if (percent >= GOI_Y_NGUONG[i][0]) return percent < 70 ? `${GOI_Y_NGUONG[i][1]} (vì tỷ lệ chưa cao)` : GOI_Y_NGUONG[i][1];
-    } return "Bỏ qua";
+        if (percent >= GOI_Y_NGUONG[i][0]) return percent < 70 ? `${GOI_Y_NGUONG[i][1]} - RATE LOW` : GOI_Y_NGUONG[i][1];
+    } return "SKIP (BỎ QUA)";
 }
 
 function duDoanTuXucXac(dices) {
@@ -424,7 +505,7 @@ function duDoanTongHop(kq_chuoi, xuc_xac) {
 function getMlsClass(kq) { return (kq === "Tài" || kq === "T") ? "color-tai" : (kq === "Xỉu" || kq === "X") ? "color-xiu" : ""; }
 function invertKQ(k){ if(!k) return k; return (k === 'Tài' || k === 'T' || k === 'TAI' ) ? 'Xỉu' : (k === 'Xỉu' || k === 'X' || k === 'XIU') ? 'Tài' : k; }
 
-document.getElementById('api-source-select').addEventListener('change', () => { window.lastDataString = ""; document.getElementById("btn-auto").innerHTML = "🔄 ĐANG CHUYỂN BÀN..."; setTimeout(fetchApiAndPredict, 500); });
+document.getElementById('api-source-select').addEventListener('change', () => { window.lastDataString = ""; document.getElementById("btn-auto").innerHTML = "🔄 ĐANG ĐỔI LUỒNG API..."; setTimeout(fetchApiAndPredict, 500); });
 
 async function fetchApiAndPredict() {
     const resultBox = document.getElementById("result-box");
@@ -432,7 +513,7 @@ async function fetchApiAndPredict() {
     const source = document.getElementById("api-source-select").value || 'normal';
     const selectedLen = parseInt(document.getElementById("seq-length-select").value, 10) || 13;
 
-    btn.innerHTML = "⏳ ĐANG XỬ LÝ..."; btn.style.opacity = "0.7";
+    btn.innerHTML = "⏳ DECODING DATA..."; btn.style.opacity = "0.7";
 
     const invertChain = invertChainCheckbox() && invertChainCheckbox().checked;
     const invertFinal = invertFinalCheckbox() && invertFinalCheckbox().checked;
@@ -469,21 +550,21 @@ async function fetchApiAndPredict() {
             chuoiN = predictData.chuoiN || [];
             lastDice = predictData.lastDice || [];
         } else {
-            showToast(`Lỗi: ${predictData.message || 'Lỗi hệ thống.'}`, 'error');
-            btn.innerHTML = "🔄 CẬP NHẬT DỮ LIỆU CẦU"; btn.style.opacity = "1"; 
+            showToast(`API ERROR: ${predictData.message || 'Hệ thống gián đoạn.'}`, 'error');
+            btn.innerHTML = "🔄 KÍCH HOẠT QUÉT CẦU"; btn.style.opacity = "1"; 
             if (predictData.kicked) {
                 setTimeout(() => { location.reload(); }, 2500); 
             }
             return;
         }
     } catch (e) {
-        showToast("Lỗi kết nối Server.", "error");
-        btn.innerHTML = "🔄 CẬP NHẬT DỮ LIỆU CẦU"; btn.style.opacity = "1"; return;
+        showToast("LỖI: MẤT KẾT NỐI TỚI SERVER GIẢI MÃ.", "error");
+        btn.innerHTML = "🔄 KÍCH HOẠT QUÉT CẦU"; btn.style.opacity = "1"; return;
     }
 
     let currentDataString = chuoiN.join("") + "-" + (lastDice ? lastDice.join("") : "");
-    if (window.lastDataString === currentDataString) { showToast("Đang chờ dữ liệu mới...", "info"); btn.innerHTML = "🔄 CẬP NHẬT DỮ LIỆU CẦU"; btn.style.opacity = "1"; return; }
-    else { if (window.lastDataString !== "") showToast("Phát hiện cầu mới! Đang cập nhật...", "success"); window.lastDataString = currentDataString; }
+    if (window.lastDataString === currentDataString) { showToast("CẦU CHƯA NHẢY. ĐANG ĐỢI VÁN MỚI...", "info"); btn.innerHTML = "🔄 KÍCH HOẠT QUÉT CẦU"; btn.style.opacity = "1"; return; }
+    else { if (window.lastDataString !== "") showToast("PHÁT HIỆN TÍN HIỆU! ĐANG ÉP DATA...", "success"); window.lastDataString = currentDataString; }
 
     const invertAllActive = btnInvertAll.classList.contains('active');
     const invertChainBtnActive = btnInvertChain.classList.contains('active');
@@ -502,37 +583,40 @@ async function fetchApiAndPredict() {
 
     resultBox.innerHTML = `
         <div class="info-row hide-on-compact" style="min-width:140px;">
-            <div style="color:#aaa; font-size:12px; margin-bottom:4px;">Nguồn: <b>${source === 'md5' && selectedGame !== 'sunwin' ? 'Bàn MD5' : 'Bàn thường'}</b> — Chuỗi ${chuoiN.length} ván:</div>
+            <div style="color:var(--neon-blue); font-size:12px; margin-bottom:6px; font-weight: bold; letter-spacing: 1px;">SOURCE: <span style="color:#fff;">[ ${source === 'md5' && selectedGame !== 'sunwin' ? 'SERVER MD5' : 'SERVER THƯỜNG'} ]</span> — CHUỖI ${chuoiN.length} VÁN:</div>
             <div class="seq-text">${chuoiN.join("")}</div>
         </div>
         <div class="info-row hide-on-compact" style="min-width:140px;">
-            <div style="color:#aaa; font-size:12px; margin-bottom:4px;">Kết quả phiên trước:</div>
-            <div>🎲 Xúc xắc: <b>${lastDice.length ? lastDice.join(" - ") : "?"}</b> (Tổng <b class="${getMlsClass(kq_xx)}">${tong_xx !== null ? tong_xx : "?"}</b>)</div>
+            <div style="color:var(--neon-purple); font-size:12px; margin-bottom:6px; font-weight: bold; letter-spacing: 1px;">DỮ LIỆU TAY TRƯỚC:</div>
+            <div style="font-family: 'Orbitron', sans-serif;">🎲 POINT: <b style="color:#fff;">${lastDice.length ? lastDice.join(" - ") : "?"}</b> (TỔNG <b class="${getMlsClass(kq_xx)}">${tong_xx !== null ? tong_xx : "?"}</b>)</div>
         </div>
         <div style="min-width:200px; margin-bottom: 6px;">
             <div class="bar-container">
-                <div class="bar-tai" style="width: ${pt}%">${pt}%</div><div class="bar-xiu" style="width: ${px}%">${px}%</div>
+                <div class="bar-tai" style="width: ${pt}%">${pt}% TÀI</div><div class="bar-xiu" style="width: ${px}%">XỈU ${px}%</div>
             </div>
         </div>
         <div class="pred-grid" style="min-width:200px;">
-            <div class="pred-box"><div class="pred-title">📊 DỰ ĐOÁN CHUỖI</div><div class="pred-value ${getMlsClass(kq_chuoi)}">${kq_chuoi}</div></div>
-            <div class="pred-box"><div class="pred-title">🎲 DỰ ĐOÁN XÚC XẮC</div><div class="pred-value ${getMlsClass(kq_xx)}">${kq_xx}</div></div>
-            <div class="pred-box pred-final"><div class="pred-title">🔥 CHỐT KẾT QUẢ TỔNG HỢP 🔥</div><div class="pred-value ${getMlsClass(ket_qua)}">${ket_qua}</div></div>
+            <div class="pred-box"><div class="pred-title">📊 LOGIC CHUỖI</div><div class="pred-value ${getMlsClass(kq_chuoi)}">${kq_chuoi}</div></div>
+            <div class="pred-box"><div class="pred-title">🎲 LOGIC XÚC XẮC</div><div class="pred-value ${getMlsClass(kq_xx)}">${kq_xx}</div></div>
+            <div class="pred-box pred-final">
+                <div class="pred-title" style="color: var(--gold); text-shadow: 0 0 5px rgba(255,170,0,0.5);">🔥 CHỐT KẾT QUẢ AI 🔥</div>
+                <div class="pred-value ${getMlsClass(ket_qua)}" style="font-size: 28px; letter-spacing: 2px;">${ket_qua}</div>
+            </div>
         </div>
-        <div class="hint-box hide-on-compact" style="min-width:160px;">💡 <b>Gợi ý đánh:</b> <span style="color:#ffd700;">${hideSuggestion ? '— (bị ẩn bởi người dùng)' : goi_y}</span></div>
-        <div class="hide-on-compact" style="margin-top:8px; font-size:12px; color:#cfcfcf;">
-            <div><b>Tùy chọn đang bật:</b> ${invertChain ? 'Bẻ chuỗi; ' : ''}${invertFinal ? 'Bẻ cuối; ' : ''}${skipDice ? 'Bỏ xúc xắc; ' : ''}${btnInvertAll.classList.contains('active') ? 'Đảo toàn bộ bằng nút; ' : ''}${btnInvertChain.classList.contains('active') ? 'Đảo chuỗi bằng nút; ' : ''}</div>
-            <div style="margin-top:6px;"><b>Chú thích:</b> ${annotation ? annotation : '—'}</div>
+        <div class="hint-box hide-on-compact" style="min-width:160px; font-weight: bold;">💡 LỆNH THỰC THI: <span style="color:var(--gold); font-family:'Orbitron', sans-serif;">${hideSuggestion ? '— (BỊ ẨN BỞI ADMIN)' : goi_y}</span></div>
+        <div class="hide-on-compact" style="margin-top:12px; font-size:12px; color:#6b7280; font-family:'Rajdhani', sans-serif; font-weight: 600;">
+            <div><span style="color:#9ca3af;">MOD CẤU HÌNH:</span> ${invertChain ? 'BẺ CHUỖI; ' : ''}${invertFinal ? 'BẺ K.QUẢ; ' : ''}${skipDice ? 'TẮT POINT; ' : ''}${btnInvertAll.classList.contains('active') ? 'ÉP ĐẢO TOÀN DIỆN; ' : ''}${btnInvertChain.classList.contains('active') ? 'ÉP ĐẢO CHUỖI; ' : ''}</div>
+            <div style="margin-top:6px;"><span style="color:#9ca3af;">LOGS USER:</span> ${annotation ? annotation : '—'}</div>
         </div>
     `;
 
     if (cau_bip) {
-        const warnHtml = document.createElement('div'); warnHtml.className = 'info-row warn-box'; warnHtml.style.border = '1px solid #ffb3b3';
-        let more = cau_bip === "Cầu bệt dài bất thường" ? "Gợi ý: Đặt ngược lại hoặc cân nhắc không đặt." : cau_bip === "Cầu nhử đảo 1-1-2" ? "Gợi ý: Đặt theo chu kỳ đảo hoặc bỏ qua." : "Gợi ý: Đặt theo xu hướng mới hoặc chờ thêm kết quả.";
-        warnHtml.innerHTML = `<div style="color:#ffdddd; font-weight:bold;">⚠️ CẢNH BÁO: ${cau_bip}</div><div class="hide-on-compact" style="color:#ffd9b3; margin-top:6px;">${more}</div>`;
+        const warnHtml = document.createElement('div'); warnHtml.className = 'info-row warn-box'; warnHtml.style.border = '1px dashed #f87171'; warnHtml.style.background = 'rgba(248,113,113,0.1)';
+        let more = cau_bip === "Cầu bệt dài bất thường" ? "LỆNH: ÉP ĐẢO KẾT QUẢ HOẶC SKIP TAY NÀY." : cau_bip === "Cầu nhử đảo 1-1-2" ? "LỆNH: BÁM NHỊP ĐẢO HOẶC TẮT AUTO." : "LỆNH: THEO XU HƯỚNG BẺ HOẶC CHỜ NHỊP SAU.";
+        warnHtml.innerHTML = `<div style="color:#f87171; font-weight:900; font-family:'Orbitron', sans-serif; font-size:14px; text-shadow: 0 0 5px rgba(248,113,113,0.5);">⚠️ ALERT: ${cau_bip.toUpperCase()}</div><div class="hide-on-compact" style="color:#fca5a5; margin-top:8px; font-family:'Rajdhani', sans-serif;">${more}</div>`;
         resultBox.prepend(warnHtml);
     }
-    btn.innerHTML = "🔄 CẬP NHẬT DỮ LIỆU CẦU"; btn.style.opacity = "1";
+    btn.innerHTML = "🔄 KÍCH HOẠT QUÉT CẦU"; btn.style.opacity = "1";
 }
 
 btnInvertAll.addEventListener('click', ()=>{ btnInvertAll.classList.toggle('active'); });
@@ -541,7 +625,7 @@ btnInvertChain.addEventListener('click', ()=>{ btnInvertChain.classList.toggle('
 const btnAdvancedToggle = document.getElementById('btn-advanced-toggle');
 const advancedSection = document.getElementById('advanced-section');
 if(btnAdvancedToggle && advancedSection){
-    btnAdvancedToggle.addEventListener('click', ()=>{ const isHidden = advancedSection.style.display === 'none'; advancedSection.style.display = isHidden ? 'block' : 'none'; btnAdvancedToggle.textContent = isHidden ? '⚙ Ẩn nâng cao' : '⚙ Nâng cao'; });
+    btnAdvancedToggle.addEventListener('click', ()=>{ const isHidden = advancedSection.style.display === 'none'; advancedSection.style.display = isHidden ? 'block' : 'none'; btnAdvancedToggle.innerHTML = isHidden ? '🛠️ ĐÓNG THIẾT LẬP NÂNG CAO' : '🛠️ MỞ THIẾT LẬP NÂNG CAO'; });
 }
 
 const panel = document.getElementById("tool-panel"); const header = document.getElementById("panel-header");
