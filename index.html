@@ -18,111 +18,644 @@
             --border-glass: rgba(0, 243, 255, 0.25);
         }
         
-        * { box-sizing: border-box; }
+        * { 
+            box-sizing: border-box; 
+        }
         
-        html,body { margin:0;padding:0;height:100%;background:var(--bg-dark);font-family: 'Rajdhani', sans-serif;color:#fff; overflow: hidden; }
+        html, body { 
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: var(--bg-dark);
+            font-family: 'Rajdhani', sans-serif;
+            color: #fff; 
+            overflow: hidden; 
+        }
         
-        .overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background: radial-gradient(circle at center, #111827 0%, #020617 100%); z-index:20000; }
-        .panel-card { width:440px; max-width:94vw; border-radius:16px; padding:30px; box-shadow: 0 0 40px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 243, 255, 0.05); background: var(--bg-glass); border: 1px solid var(--border-glass); backdrop-filter: blur(15px); position: relative; overflow: hidden; }
-        .panel-card::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, rgba(0, 243, 255, 0.1), transparent 30%); animation: rotate 4s linear infinite; pointer-events: none; z-index: -1; }
-        @keyframes rotate { 100% { transform: rotate(1turn); } }
+        .overlay { 
+            position: fixed; 
+            inset: 0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: radial-gradient(circle at center, #111827 0%, #020617 100%); 
+            z-index: 20000; 
+        }
+
+        .panel-card { 
+            width: 440px; 
+            max-width: 94vw; 
+            border-radius: 16px; 
+            padding: 30px; 
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 243, 255, 0.05); 
+            background: var(--bg-glass); 
+            border: 1px solid var(--border-glass); 
+            backdrop-filter: blur(15px); 
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        .panel-card::before { 
+            content: ""; 
+            position: absolute; 
+            top: -50%; 
+            left: -50%; 
+            width: 200%; 
+            height: 200%; 
+            background: conic-gradient(transparent, rgba(0, 243, 255, 0.1), transparent 30%); 
+            animation: rotate 4s linear infinite; 
+            pointer-events: none; 
+            z-index: -1; 
+        }
+
+        @keyframes rotate { 
+            100% { transform: rotate(1turn); } 
+        }
         
-        .panel-card h2 { margin:0 0 10px 0; font-size:22px; text-align:center; text-transform: uppercase; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; color: var(--neon-blue); text-shadow: 0 0 10px rgba(0,243,255,0.5); display:flex; align-items:center; justify-content:center; }
-        .sub { font-size:15px; color:#9ca3af; text-align:center; margin-bottom:10px; font-weight: 500; }
+        .panel-card h2 { 
+            margin: 0 0 10px 0; 
+            font-size: 22px; 
+            text-align: center; 
+            text-transform: uppercase; 
+            font-family: 'Orbitron', sans-serif; 
+            letter-spacing: 1px; 
+            color: var(--neon-blue); 
+            text-shadow: 0 0 10px rgba(0,243,255,0.5); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .sub { 
+            font-size: 15px; 
+            color: #9ca3af; 
+            text-align: center; 
+            margin-bottom: 10px; 
+            font-weight: 500; 
+        }
         
-        .game-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 25px; }
-        .btn-game { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 25px 10px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); color: #fff; font-weight: 700; font-family: 'Orbitron', sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.4); text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-        .btn-game::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; }
-        .btn-game img { width: 52px; height: 52px; margin-bottom: 12px; border-radius: 14px; border: 2px solid rgba(255,255,255,0.9); box-shadow: 0 5px 15px rgba(0,0,0,0.6); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); object-fit: cover; }
-        .btn-game:hover { transform: translateY(-5px); border-color: var(--neon-blue); box-shadow: 0 12px 25px rgba(0, 243, 255, 0.3); }
-        .btn-game:hover img { transform: scale(1.15) translateY(-2px); border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 243, 255, 0.8); }
-        .btn-game:hover::after { left: 200%; transition: 0.7s; }
+        .game-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 16px; 
+            margin-top: 25px; 
+        }
+
+        .btn-game { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 25px 10px; 
+            border-radius: 16px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            color: #fff; 
+            font-weight: 700; 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 13px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            position: relative; 
+            overflow: hidden; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4); 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
+        }
+
+        .btn-game::after { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: -100%; 
+            width: 50%; 
+            height: 100%; 
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); 
+            transition: 0.5s; 
+        }
+
+        .btn-game img { 
+            width: 52px; 
+            height: 52px; 
+            margin-bottom: 12px; 
+            border-radius: 14px; 
+            border: 2px solid rgba(255,255,255,0.9); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6); 
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            object-fit: cover; 
+        }
+
+        .btn-game:hover { 
+            transform: translateY(-5px); 
+            border-color: var(--neon-blue); 
+            box-shadow: 0 12px 25px rgba(0, 243, 255, 0.3); 
+        }
+
+        .btn-game:hover img { 
+            transform: scale(1.15) translateY(-2px); 
+            border-color: var(--neon-blue); 
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.8); 
+        }
+
+        .btn-game:hover::after { 
+            left: 200%; 
+            transition: 0.7s; 
+        }
 
         .bg-lc79 { background: linear-gradient(135deg, #064e3b, #10b981); }
         .bg-xd88 { background: linear-gradient(135deg, #78350f, #f59e0b); }
         .bg-betvip { background: linear-gradient(135deg, #881337, #e11d48); }
         .bg-sunwin { background: linear-gradient(135deg, #7c2d12, #ea580c); }
 
-        .price-grid { display:flex; gap:6px; justify-content:space-between; margin:20px 0; }
-        .price-item { flex:1; background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.5)); padding:12px 4px; border-radius:10px; text-align:center; border:1px solid rgba(255,170,0,0.3); box-shadow: inset 0 0 10px rgba(255,170,0,0.05); transition: transform 0.2s; }
-        .price-item:hover { transform: translateY(-3px); border-color: var(--gold); box-shadow: 0 5px 15px rgba(255,170,0,0.2); }
-        .price-item div:first-child { font-size:16px; color:var(--gold); font-family: 'Orbitron', sans-serif; font-weight: bold; text-shadow: 0 0 5px rgba(255,170,0,0.5); }
-        .price-item div:last-child { font-size:12px; color:#cbd5e1; margin-top: 4px; text-transform: uppercase; }
-        
-        .input-row { display:flex; gap:10px; margin-top:10px; }
-        input[type="text"]{ flex:1; padding:14px; border-radius:10px; border:1px solid rgba(0,243,255,0.4); background: rgba(0,0,0,0.6); color:#fff; outline:none; font-family: 'Orbitron', sans-serif; letter-spacing: 2px; font-size: 14px; transition: all 0.3s; }
-        input[type="text"]:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0,243,255,0.3); }
-        
-        .btn { padding:14px 20px; border-radius:10px; border:none; cursor:pointer; font-weight:700; font-size: 15px; color:#fff; transition: all 0.3s; display: flex; align-items: center; justify-content: center; text-transform: uppercase; font-family: 'Orbitron', sans-serif; }
-        .btn-check { background: linear-gradient(90deg, #0055ff, #00aaff); box-shadow: 0 4px 15px rgba(0, 170, 255, 0.4); }
-        .btn-check:hover { background: linear-gradient(90deg, #00aaff, #00f3ff); box-shadow: 0 6px 20px rgba(0, 243, 255, 0.6); transform: scale(1.02); }
-        .btn-ghost { background:transparent; border:1px solid rgba(255,255,255,0.1); color:#9ca3af; padding:12px; border-radius:10px; cursor:pointer; font-weight:600; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-ghost:hover { background: rgba(255,255,255,0.05); color: #fff; border-color: rgba(255,255,255,0.3); }
-        
-        .msg { text-align:center; margin-top:15px; min-height:20px; font-size:15px; font-weight: bold; }
-        .msg.success { color:#34d399; }
-        .msg.error { color:#f87171; }
-        .small { font-size:13px; color:#6b7280; text-align:center; margin-top:10px; margin-bottom: 15px;}
+        .price-grid { 
+            display: flex; 
+            gap: 6px; 
+            justify-content: space-between; 
+            margin: 20px 0; 
+        }
 
-        #game-frame { width:100%; height:100vh; border: none; display:block; filter:none; }
-        #toggle-tool { position:fixed; top:15px; right:15px; z-index:10000; padding:12px 18px; background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue)); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; display:none; font-family: 'Orbitron', sans-serif; box-shadow: 0 0 20px rgba(0, 243, 255, 0.5); }
-        
-        #tool-panel { position:absolute; top:15px; right:15px; width:360px; min-width:260px; min-height:150px; background: var(--bg-glass); color: #fff; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.9), inset 0 0 15px rgba(0,243,255,0.1); border: 1px solid var(--border-glass); z-index:9999; backdrop-filter: blur(12px); resize: both; transform-origin: top right; transform: scale(var(--panel-scale)); display:none; font-family: 'Rajdhani', sans-serif; }
-        #tool-panel.horizontal { width: 580px; }
-        
-        @keyframes flash-vip { 0% { border-color: var(--gold); box-shadow: 0 0 10px rgba(255,170,0,0.3); } 50% { border-color: #ff3333; box-shadow: 0 0 25px rgba(255,51,51,0.9); } 100% { border-color: var(--gold); box-shadow: 0 0 10px rgba(255,170,0,0.3); } }
+        .price-item { 
+            flex: 1; 
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.5)); 
+            padding: 12px 4px; 
+            border-radius: 10px; 
+            text-align: center; 
+            border: 1px solid rgba(255,170,0,0.3); 
+            box-shadow: inset 0 0 10px rgba(255,170,0,0.05); 
+            transition: transform 0.2s; 
+        }
 
-        .panel-header { background: linear-gradient(90deg, #0f172a, #1e1b4b); padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:8px; border-bottom: 2px solid var(--neon-purple); cursor: grab; }
-        .header-left { display:flex; gap:8px; align-items:center; }
-        .header-title { font-weight:900; text-transform: uppercase; font-family: 'Orbitron', sans-serif; color: #fff; font-size: 15px;}
-        .expire-badge { font-size:12px; background:rgba(0,0,0,0.5); padding:6px 10px; border-radius:6px; color:var(--neon-blue); border: 1px solid rgba(0,243,255,0.3); font-weight: 600; font-family: 'Orbitron', sans-serif;}
+        .price-item:hover { 
+            transform: translateY(-3px); 
+            border-color: var(--gold); 
+            box-shadow: 0 5px 15px rgba(255,170,0,0.2); 
+        }
+
+        .price-item div:first-child { 
+            font-size: 16px; 
+            color: var(--gold); 
+            font-family: 'Orbitron', sans-serif; 
+            font-weight: bold; 
+            text-shadow: 0 0 5px rgba(255,170,0,0.5); 
+        }
+
+        .price-item div:last-child { 
+            font-size: 12px; 
+            color: #cbd5e1; 
+            margin-top: 4px; 
+            text-transform: uppercase; 
+        }
         
-        .controls button { background: transparent; border: none; color: #9ca3af; cursor: pointer; font-size: 16px; padding: 4px; transition: color 0.2s; }
-        .controls button:hover { color: #fff; }
+        .input-row { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 10px; 
+        }
+
+        input[type="text"] { 
+            flex: 1; 
+            padding: 14px; 
+            border-radius: 10px; 
+            border: 1px solid rgba(0,243,255,0.4); 
+            background: rgba(0,0,0,0.6); 
+            color: #fff; 
+            outline: none; 
+            font-family: 'Orbitron', sans-serif; 
+            letter-spacing: 2px; 
+            font-size: 14px; 
+            transition: all 0.3s; 
+        }
+
+        input[type="text"]:focus { 
+            border-color: var(--neon-blue); 
+            box-shadow: 0 0 15px rgba(0,243,255,0.3); 
+        }
         
-        .panel-body { padding:16px; overflow:auto; max-height:calc(100vh - 100px); display:flex; flex-direction:column; gap:14px; }
-        #btn-auto{ width:100%; padding:14px; background:linear-gradient(90deg, #ffaa00, #ff5500); color:#000; font-weight:900; border:none; border-radius:10px; cursor:pointer; font-family: 'Orbitron', sans-serif; font-size: 14px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(255,170,0,0.4); }
+        .btn { 
+            padding: 14px 20px; 
+            border-radius: 10px; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-size: 15px; 
+            color: #fff; 
+            transition: all 0.3s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-transform: uppercase; 
+            font-family: 'Orbitron', sans-serif; 
+        }
+
+        .btn-check { 
+            background: linear-gradient(90deg, #0055ff, #00aaff); 
+            box-shadow: 0 4px 15px rgba(0, 170, 255, 0.4); 
+        }
+
+        .btn-check:hover { 
+            background: linear-gradient(90deg, #00aaff, #00f3ff); 
+            box-shadow: 0 6px 20px rgba(0, 243, 255, 0.6); 
+            transform: scale(1.02); 
+        }
+
+        .btn-ghost { 
+            background: transparent; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            color: #9ca3af; 
+            padding: 12px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-family: 'Rajdhani', sans-serif; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+
+        .btn-ghost:hover { 
+            background: rgba(255,255,255,0.05); 
+            color: #fff; 
+            border-color: rgba(255,255,255,0.3); 
+        }
         
-        .select-row { display:flex; gap:10px; align-items:center; font-size: 14px; font-weight: 600; color: #cbd5e1; }
-        select { background: rgba(0,0,0,0.5); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 6px; outline: none; font-family: 'Rajdhani', sans-serif; }
-        .seq-text{ letter-spacing:4px; font-family:'Orbitron', monospace; color:var(--gold); font-weight:700; font-size: 15px; }
-        .info-row { background: rgba(0,0,0,0.4); padding:12px; border-radius:10px; font-size:15px; border:1px solid rgba(255,255,255,0.05); }
+        .msg { 
+            text-align: center; 
+            margin-top: 15px; 
+            min-height: 20px; 
+            font-size: 15px; 
+            font-weight: bold; 
+        }
+
+        .msg.success { color: #34d399; }
+        .msg.error { color: #f87171; }
         
-        /* GRID 2x2 MỚI DÀNH CHO 4 LUỒNG LOGIC */
-        .pred-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-        .pred-box { background: rgba(0,0,0,0.5); padding:12px 8px; border-radius:10px; text-align:center; border:1px solid rgba(255,255,255,0.08); box-shadow: inset 0 0 15px rgba(0,0,0,0.4); transition: all 0.3s;}
-        .pred-title { font-size: 12px; color: #9ca3af; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 6px; }
-        .pred-value { font-size: 22px; font-family: 'Orbitron', sans-serif; font-weight: 900; }
-        .pred-sub { font-size: 11px; color: #aaa; margin-top: 4px; }
+        .small { 
+            font-size: 13px; 
+            color: #6b7280; 
+            text-align: center; 
+            margin-top: 10px; 
+            margin-bottom: 15px;
+        }
+
+        #game-frame { 
+            width: 100%; 
+            height: 100vh; 
+            border: none; 
+            display: block; 
+            filter: none; 
+        }
+
+        #toggle-tool { 
+            position: fixed; 
+            top: 15px; 
+            right: 15px; 
+            z-index: 10000; 
+            padding: 12px 18px; 
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue)); 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            display: none; 
+            font-family: 'Orbitron', sans-serif; 
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5); 
+        }
         
-        .pred-final { grid-column:span 2; background:linear-gradient(135deg, rgba(30,27,75,0.8), rgba(15,23,42,0.9)); border:1px solid var(--gold); padding:16px; position: relative; overflow: hidden; }
-        .pred-final::after { content:''; position:absolute; top:0; left:-100%; width:50%; height:100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); animation: shine 3s infinite; }
+        #tool-panel { 
+            position: absolute; 
+            top: 15px; 
+            right: 15px; 
+            width: 360px; 
+            min-width: 260px; 
+            min-height: 150px; 
+            background: var(--bg-glass); 
+            color: #fff; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9), inset 0 0 15px rgba(0,243,255,0.1); 
+            border: 1px solid var(--border-glass); 
+            z-index: 9999; 
+            backdrop-filter: blur(12px); 
+            resize: both; 
+            transform-origin: top right; 
+            transform: scale(var(--panel-scale)); 
+            display: none; 
+            font-family: 'Rajdhani', sans-serif; 
+        }
+
+        /* --- CSS CHO CÁC CHẾ ĐỘ THU GỌN VÀ NẰM NGANG --- */
+        #tool-panel.horizontal { 
+            width: 580px; 
+        }
+        #tool-panel.horizontal .pred-grid { 
+            grid-template-columns: 1fr 1fr 1fr; 
+        }
+        #tool-panel.horizontal .pred-final { 
+            grid-column: span 1; 
+        }
+
+        #tool-panel.compact-mode { 
+            width: 260px !important; 
+            min-width: 220px; 
+        }
+        #tool-panel.compact-mode #panel-settings, 
+        #tool-panel.compact-mode .hide-on-compact { 
+            display: none !important; 
+        }
+        #tool-panel.compact-mode .pred-grid { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+        }
+        #tool-panel.compact-mode .pred-box { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 10px 14px; 
+            border-radius: 8px; 
+            text-align: right;
+        }
+        #tool-panel.compact-mode .pred-title { 
+            font-size: 12px; 
+            text-align: left; 
+            margin: 0; 
+        }
+        #tool-panel.compact-mode .pred-sub { 
+            display: none; 
+        }
+        /* ------------------------------------------------ */
+        
+        @keyframes flash-vip { 
+            0% { border-color: var(--gold); box-shadow: 0 0 10px rgba(255,170,0,0.3); } 
+            50% { border-color: #ff3333; box-shadow: 0 0 25px rgba(255,51,51,0.9); } 
+            100% { border-color: var(--gold); box-shadow: 0 0 10px rgba(255,170,0,0.3); } 
+        }
+
+        .panel-header { 
+            background: linear-gradient(90deg, #0f172a, #1e1b4b); 
+            padding: 14px 16px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 8px; 
+            border-bottom: 2px solid var(--neon-purple); 
+            cursor: grab; 
+        }
+
+        .header-left { 
+            display: flex; 
+            gap: 8px; 
+            align-items: center; 
+        }
+
+        .header-title { 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            font-family: 'Orbitron', sans-serif; 
+            color: #fff; 
+            font-size: 15px;
+        }
+
+        .expire-badge { 
+            font-size: 12px; 
+            background: rgba(0,0,0,0.5); 
+            padding: 6px 10px; 
+            border-radius: 6px; 
+            color: var(--neon-blue); 
+            border: 1px solid rgba(0,243,255,0.3); 
+            font-weight: 600; 
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .controls button { 
+            background: transparent; 
+            border: none; 
+            color: #9ca3af; 
+            cursor: pointer; 
+            font-size: 16px; 
+            padding: 4px; 
+            transition: color 0.2s; 
+        }
+
+        .controls button:hover { 
+            color: #fff; 
+        }
+        
+        .panel-body { 
+            padding: 16px; 
+            overflow: auto; 
+            max-height: calc(100vh - 100px); 
+            display: flex; 
+            flex-direction: column; 
+            gap: 14px; 
+        }
+
+        #btn-auto { 
+            width: 100%; 
+            padding: 14px; 
+            background: linear-gradient(90deg, #ffaa00, #ff5500); 
+            color: #000; 
+            font-weight: 900; 
+            border: none; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 14px; 
+            text-transform: uppercase; 
+            box-shadow: 0 4px 15px rgba(255,170,0,0.4); 
+        }
+        
+        .select-row { 
+            display: flex; 
+            gap: 10px; 
+            align-items: center; 
+            font-size: 14px; 
+            font-weight: 600; 
+            color: #cbd5e1; 
+        }
+
+        select { 
+            background: rgba(0,0,0,0.5); 
+            color: #fff; 
+            border: 1px solid rgba(255,255,255,0.2); 
+            padding: 6px 10px; 
+            border-radius: 6px; 
+            outline: none; 
+            font-family: 'Rajdhani', sans-serif; 
+        }
+
+        .seq-text { 
+            letter-spacing: 4px; 
+            font-family: 'Orbitron', monospace; 
+            color: var(--gold); 
+            font-weight: 700; 
+            font-size: 15px; 
+        }
+
+        .info-row { 
+            background: rgba(0,0,0,0.4); 
+            padding: 12px; 
+            border-radius: 10px; 
+            font-size: 15px; 
+            border: 1px solid rgba(255,255,255,0.05); 
+        }
+        
+        .pred-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+        }
+
+        .pred-box { 
+            background: rgba(0,0,0,0.5); 
+            padding: 12px 8px; 
+            border-radius: 10px; 
+            text-align: center; 
+            border: 1px solid rgba(255,255,255,0.08); 
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4); 
+            transition: all 0.3s;
+        }
+
+        .pred-title { 
+            font-size: 12px; 
+            color: #9ca3af; 
+            text-transform: uppercase; 
+            font-weight: bold; 
+            letter-spacing: 1px; 
+            margin-bottom: 6px; 
+        }
+
+        .pred-value { 
+            font-size: 22px; 
+            font-family: 'Orbitron', sans-serif; 
+            font-weight: 900; 
+        }
+
+        .pred-sub { 
+            font-size: 11px; 
+            color: #aaa; 
+            margin-top: 4px; 
+        }
+        
+        .pred-final { 
+            grid-column: span 2; 
+            background: linear-gradient(135deg, rgba(30,27,75,0.8), rgba(15,23,42,0.9)); 
+            border: 1px solid var(--gold); 
+            padding: 16px; 
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        .pred-final::after { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: -100%; 
+            width: 50%; 
+            height: 100%; 
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); 
+            animation: shine 3s infinite; 
+        }
         
         .color-tai { color: #f87171; text-shadow: 0 0 10px rgba(248,113,113,0.6); }
         .color-xiu { color: #60a5fa; text-shadow: 0 0 10px rgba(96,165,250,0.6); }
         .color-off { color: #555; font-size: 16px !important; }
 
-        .hint-box{ text-align:center; font-size:15px; color:#fff; background:rgba(255,170,0,0.1); padding:10px; border-radius:8px; border: 1px dashed rgba(255,170,0,0.3); }
+        .hint-box { 
+            text-align: center; 
+            font-size: 15px; 
+            color: #fff; 
+            background: rgba(255,170,0,0.1); 
+            padding: 10px; 
+            border-radius: 8px; 
+            border: 1px dashed rgba(255,170,0,0.3); 
+        }
 
-        .control-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top: 4px; }
-        .tiny { font-size:13px; color:#9ca3af; font-weight: 500; }
-        .tiny label { cursor: pointer; display: flex; align-items: center; gap: 4px; }
-        .toggle-btn { padding:8px 12px; border-radius:8px; border:1px solid #4b5563; background:rgba(0,0,0,0.4); color:#d1d5db; cursor:pointer; font-family: 'Rajdhani', sans-serif; font-weight: bold; transition: all 0.2s; }
-        .toggle-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
-        .toggle-btn.active { background:var(--neon-blue); color:#000; border-color:var(--neon-blue); box-shadow: 0 0 10px rgba(0,243,255,0.4); }
+        .control-row { 
+            display: flex; 
+            gap: 10px; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            margin-top: 4px; 
+        }
 
-        #toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100000; pointer-events: none; }
-        .toast { background: var(--bg-glass); color: #fff; padding: 14px 24px; border-radius: 10px; border-left: 4px solid var(--neon-blue); box-shadow: 0 8px 25px rgba(0,0,0,0.8); font-size: 15px; font-weight: 600; font-family: 'Rajdhani', sans-serif; backdrop-filter: blur(10px); animation: toast-in 0.4s forwards, toast-out 0.4s forwards 3s; }
+        .tiny { 
+            font-size: 13px; 
+            color: #9ca3af; 
+            font-weight: 500; 
+        }
 
-        @keyframes toast-in { from { opacity: 0; transform: translateX(100%) scale(0.9); } to { opacity: 1; transform: translateX(0) scale(1); } }
-        @keyframes toast-out { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(100%); } }
+        .tiny label { 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+        }
+
+        .toggle-btn { 
+            padding: 8px 12px; 
+            border-radius: 8px; 
+            border: 1px solid #4b5563; 
+            background: rgba(0,0,0,0.4); 
+            color: #d1d5db; 
+            cursor: pointer; 
+            font-family: 'Rajdhani', sans-serif; 
+            font-weight: bold; 
+            transition: all 0.2s; 
+        }
+
+        .toggle-btn:hover { 
+            background: rgba(255,255,255,0.1); 
+            color: #fff; 
+        }
+
+        .toggle-btn.active { 
+            background: var(--neon-blue); 
+            color: #000; 
+            border-color: var(--neon-blue); 
+            box-shadow: 0 0 10px rgba(0,243,255,0.4); 
+        }
+
+        #toast-container { 
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            z-index: 100000; 
+            pointer-events: none; 
+        }
+
+        .toast { 
+            background: var(--bg-glass); 
+            color: #fff; 
+            padding: 14px 24px; 
+            border-radius: 10px; 
+            border-left: 4px solid var(--neon-blue); 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.8); 
+            font-size: 15px; 
+            font-weight: 600; 
+            font-family: 'Rajdhani', sans-serif; 
+            backdrop-filter: blur(10px); 
+            animation: toast-in 0.4s forwards, toast-out 0.4s forwards 3s; 
+        }
+
+        @keyframes toast-in { 
+            from { opacity: 0; transform: translateX(100%) scale(0.9); } 
+            to { opacity: 1; transform: translateX(0) scale(1); } 
+        }
+
+        @keyframes toast-out { 
+            from { opacity: 1; transform: translateX(0); } 
+            to { opacity: 0; transform: translateX(100%); } 
+        }
 
         @media (max-width:720px) {
-            #toggle-tool { right:12px; top:12px; }
-            #tool-panel{ left:8px; right:8px; width:auto; min-width:auto; transform-origin:top center; }
-            .panel-body{ padding:12px; max-height:75vh; }
+            #toggle-tool { right: 12px; top: 12px; }
+            #tool-panel { left: 8px; right: 8px; width: auto; min-width: auto; transform-origin: top center; }
+            .panel-body { padding: 12px; max-height: 75vh; }
             .game-grid { gap: 10px; }
-            .btn-game { padding: 15px 5px; font-size: 12px;}
+            .btn-game { padding: 15px 5px; font-size: 12px; }
             .btn-game img { width: 40px; height: 40px; }
         }
     </style>
@@ -136,10 +669,22 @@
             <h2>HỆ THỐNG DỰ ĐOÁN VIP</h2>
             <div class="sub">Chọn cổng game mà bạn muốn dự đoán</div>
             <div class="game-grid">
-                <button id="btn-select-lc79" class="btn-game bg-lc79"><img src="https://i.postimg.cc/NGKy82K4/lc79.webp"><span>MỞ TOOL LC79</span></button>
-                <button id="btn-select-xd88" class="btn-game bg-xd88"><img src="https://i.postimg.cc/wMCkTgVs/xocdia88.png"><span>MỞ TOOL XOCDIA88</span></button>
-                <button id="btn-select-betvip" class="btn-game bg-betvip"><img src="https://i.postimg.cc/Nj4NDCNW/betvip.webp"><span>MỞ TOOL BETVIP</span></button>
-                <button id="btn-select-sunwin" class="btn-game bg-sunwin"><img src="https://i.postimg.cc/y6wrZ8xx/IMG-7874.jpg"><span>MỞ TOOL SUNWIN</span></button>
+                <button id="btn-select-lc79" class="btn-game bg-lc79">
+                    <img src="https://i.postimg.cc/NGKy82K4/lc79.webp">
+                    <span>MỞ TOOL LC79</span>
+                </button>
+                <button id="btn-select-xd88" class="btn-game bg-xd88">
+                    <img src="https://i.postimg.cc/wMCkTgVs/xocdia88.png">
+                    <span>MỞ TOOL XOCDIA88</span>
+                </button>
+                <button id="btn-select-betvip" class="btn-game bg-betvip">
+                    <img src="https://i.postimg.cc/Nj4NDCNW/betvip.webp">
+                    <span>MỞ TOOL BETVIP</span>
+                </button>
+                <button id="btn-select-sunwin" class="btn-game bg-sunwin">
+                    <img src="https://i.postimg.cc/y6wrZ8xx/IMG-7874.jpg">
+                    <span>MỞ TOOL SUNWIN</span>
+                </button>
             </div>
         </div>
     </div>
@@ -148,14 +693,31 @@
         <div class="panel-card" role="document">
             <h2 id="entryTitle">XÁC THỰC KEY VIP <span id="gameNameDisplay" style="color:var(--neon-blue); margin-left: 8px;"></span></h2>
             <div class="sub">Nhập mã Key truy cập máy chủ <span id="gameNameSub" style="font-weight:bold; color:#fff;"></span></div>
+            
             <div class="price-grid">
-                <div class="price-item"><div>19K</div><div>1 Ngày</div></div>
-                <div class="price-item"><div>49K</div><div>7 Ngày</div></div>
-                <div class="price-item"><div>99K</div><div>30 Ngày</div></div>
-                <div class="price-item" style="border-color: var(--neon-purple); box-shadow: inset 0 0 15px rgba(188,19,254,0.1);"><div style="color: var(--neon-purple);">199K</div><div>Vĩnh viễn</div></div>
+                <div class="price-item">
+                    <div>19K</div>
+                    <div>1 Ngày</div>
+                </div>
+                <div class="price-item">
+                    <div>49K</div>
+                    <div>7 Ngày</div>
+                </div>
+                <div class="price-item">
+                    <div>99K</div>
+                    <div>30 Ngày</div>
+                </div>
+                <div class="price-item" style="border-color: var(--neon-purple); box-shadow: inset 0 0 15px rgba(188,19,254,0.1);">
+                    <div style="color: var(--neon-purple);">199K</div>
+                    <div>Vĩnh viễn</div>
+                </div>
             </div>
+
             <div style="margin-top:6px">
-                <div class="input-row"><input id="keyInput" type="text" placeholder="Nhập Key KEY-XXXX..." autocomplete="off" /><button id="checkBtn" class="btn btn-check">KIỂM TRA</button></div>
+                <div class="input-row">
+                    <input id="keyInput" type="text" placeholder="Nhập Key KEY-XXXX..." autocomplete="off" />
+                    <button id="checkBtn" class="btn btn-check">KIỂM TRA</button>
+                </div>
                 <div id="entryMsg" class="msg"></div>
                 <div class="small" style="margin-bottom: 15px;">⚠️ HWID SECURE: Key sẽ khóa theo thiết bị hiện tại.</div>
                 <button id="backToGameSelectBtn" class="btn-ghost" style="width:100%;">⬅ CHỌN LẠI SERVER</button>
@@ -164,27 +726,53 @@
     </div>
 
     <iframe id="game-frame" src="about:blank" style="width:100%;height:100vh;border:0;display:none;"></iframe>
+    
     <button id="toggle-tool" onclick="togglePanel()">⚙ MỞ MENU TOOL</button>
 
     <div id="tool-panel" aria-hidden="true">
         <div class="panel-header" id="panel-header">
-            <div class="header-left"><div class="header-title" id="tool-title">⚡ VIP PREDICTOR</div></div>
+            <div class="header-left">
+                <div class="header-title" id="tool-title">⚡ VIP PREDICTOR</div>
+            </div>
             <div style="display:flex;align-items:center;gap:8px">
                 <div id="expireBadge" class="expire-badge">Key: --</div>
+                
                 <div class="controls">
-                    <button class="icon" onclick="changeScale(-0.1)">−</button><button class="icon" onclick="changeScale(0.1)">+</button>
-                    <button class="icon" onclick="resetScale()">R</button><button class="close-btn" onclick="togglePanel()">×</button>
+                    <button class="icon" title="Thu gọn bảng" onclick="toggleCompactMode()">⏬</button>
+                    <button class="icon" title="Thu nhỏ size" onclick="changeScale(-0.1)">−</button>
+                    <button class="icon" title="Phóng to size" onclick="changeScale(0.1)">+</button>
+                    <button class="icon" title="Reset size" onclick="resetScale()">R</button>
+                    <button class="icon" id="orientBtn" title="Chuyển chế độ ngang" onclick="toggleOrientation()">↔</button>
+                    <button class="close-btn" title="Ẩn Tool" onclick="togglePanel()">×</button>
                 </div>
             </div>
         </div>
 
         <div class="panel-body" id="panel-body">
-            <div style="flex: 0 0 100%;"><button id="btn-auto" onclick="fetchApiAndPredict()">🔄 KÍCH HOẠT QUÉT CẦU</button></div>
+            <div style="flex: 0 0 100%;">
+                <button id="btn-auto" onclick="fetchApiAndPredict()">🔄 KÍCH HOẠT QUÉT CẦU</button>
+            </div>
 
             <div id="panel-settings" style="display:flex; flex-direction:column; gap:12px;">
-                <div class="select-row">
-                    <label>Luồng API:</label>
-                    <select id="api-source-select" style="flex:1"><option value="normal">Server Thường</option><option value="md5">Server MD5</option></select>
+                
+                <div style="display:flex; gap:10px;">
+                    <div class="select-row" style="flex:1;">
+                        <label>Chuỗi:</label>
+                        <select id="seq-length-select" style="flex:1">
+                            <option value="11">11 Tay</option>
+                            <option value="12">12 Tay</option>
+                            <option value="13" selected>13 Tay</option>
+                            <option value="14">14 Tay</option>
+                            <option value="15">15 Tay</option>
+                        </select>
+                    </div>
+                    <div class="select-row" style="flex:1;">
+                        <label>Luồng API:</label>
+                        <select id="api-source-select" style="flex:1">
+                            <option value="normal">Thường</option>
+                            <option value="md5">MD5</option>
+                        </select>
+                    </div>
                 </div>
 
                 <button id="btn-advanced-toggle" class="toggle-btn" style="width:100%; border-color: var(--neon-purple); color: var(--neon-purple);">🛠️ THIẾT LẬP NÂNG CAO</button>
@@ -199,149 +787,398 @@
                     <div class="control-row tiny" style="margin-bottom: 8px; border-top: 1px dashed #444; padding-top: 8px;">
                         <span style="color:var(--gold)">Tính năng phụ:</span>
                         <label><input type="checkbox" id="strict-mode" class="logic-toggle" /> Ép đồng thuận (Chỉ chốt khi trùng màu)</label>
-                        <label><input type="checkbox" id="hide-percent" class="logic-toggle" /> Ẩn tỷ lệ % (Giao diện gọn)</label>
+                        <label><input type="checkbox" id="safe-mode" class="logic-toggle" /> Chế độ An Toàn (Bỏ qua cầu rủi ro < 70%)</label>
                     </div>
                     <div class="control-row tiny" style="border-top: 1px dashed #444; padding-top: 8px;">
+                        <label><input type="checkbox" id="hide-percent" class="logic-toggle" /> Ẩn tỷ lệ % (Giao diện gọn)</label>
                         <label><input type="checkbox" id="invert-chain-checkbox" /> Đảo Chuỗi Gốc</label>
                         <label><input type="checkbox" id="auto-refresh-checkbox" /> Auto Get (10s)</label>
+                        <label><input type="checkbox" id="sound-alert-checkbox" checked /> Âm thanh</label>
                     </div>
                 </div>
 
+                <div class="select-row hide-on-compact" style="align-items:flex-start; gap:10px;">
+                    <label style="align-self:flex-start; margin-top: 8px;">Ghi chú:</label>
+                    <textarea id="annotation-input" rows="1" style="flex:1; padding:8px; border-radius:8px; background:rgba(0,0,0,0.6); border:1px solid rgba(0,243,255,0.2); color:#fff; resize:vertical; font-family: 'Rajdhani', sans-serif;" placeholder="Ghi nhớ nhịp cầu..."></textarea>
+                </div>
+
             </div>
-            <div id="result-box"><div style="text-align:center;color:#6b7280;padding:30px 0; font-family: 'Orbitron', sans-serif;"><i>ĐANG CHỜ LỆNH QUÉT...</i></div></div>
+            
+            <div id="result-box">
+                <div style="text-align:center;color:#6b7280;padding:30px 0; font-family: 'Orbitron', sans-serif;">
+                    <i>ĐANG CHỜ LỆNH QUÉT...</i>
+                </div>
+            </div>
+            
         </div>
     </div>
 
 <script>
 // ================= BẢO MẬT & CHỐNG F12 =================
 document.addEventListener('contextmenu', event => event.preventDefault()); 
+
 document.addEventListener('keydown', function(e) {
-    if(e.keyCode === 123) { e.preventDefault(); return false; } 
-    if(e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; } 
-    if(e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; } 
+    if(e.keyCode === 123) { 
+        e.preventDefault(); 
+        return false; 
+    } 
+    if(e.ctrlKey && e.shiftKey && e.keyCode === 73) { 
+        e.preventDefault(); 
+        return false; 
+    } 
+    if(e.ctrlKey && e.keyCode === 85) { 
+        e.preventDefault(); 
+        return false; 
+    } 
 });
-setInterval(function() { (function() { return false; }['constructor']('debugger')()); }, 50);
 
-const KEY_SERVER_URL = "https://vip-key-server.onrender.com"; // Bác nhớ thay Link của bác nhé
+setInterval(function() { 
+    (function() { return false; }['constructor']('debugger')()); 
+}, 50);
+
+const KEY_SERVER_URL = "https://vip-key-server.onrender.com"; // Bác nhớ thay Link render thực tế của bác vào đây
 const HWID_SECRET = "MY_SUPER_SECRET_HWID_KEY_2026"; 
-window.lastDataString = ""; window.lastPredictData = null; 
-let selectedGame = ''; let sessionToken = null; let currentKey = null;
 
-function generateSignature(hwid, timestamp) { return CryptoJS.HmacSHA256(hwid + timestamp, HWID_SECRET).toString(); }
+window.lastDataString = ""; 
+window.lastPredictData = null; 
+let selectedGame = ''; 
+let sessionToken = null; 
+let currentKey = null;
+
+function generateSignature(hwid, timestamp) { 
+    return CryptoJS.HmacSHA256(hwid + timestamp, HWID_SECRET).toString(); 
+}
 
 function showToast(msg, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
-    toast.className = `toast ${type}`; toast.innerHTML = msg;
-    container.appendChild(toast); setTimeout(() => toast.remove(), 3500);
+    toast.className = `toast ${type}`; 
+    toast.innerHTML = msg;
+    container.appendChild(toast); 
+    setTimeout(() => toast.remove(), 3500);
 }
 
 let audioCtx = null;
 function playBeep(type) {
+    const soundEnabled = document.getElementById('sound-alert-checkbox').checked;
+    if (!soundEnabled) return; // Nếu tắt loa thì không kêu
+
     try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator(); const gainNode = audioCtx.createGain();
-        osc.connect(gainNode); gainNode.connect(audioCtx.destination);
-        if (type === 'warn') { osc.type = 'square'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.3); gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3); osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
-        } else { osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1); gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2); osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.2); }
+        const osc = audioCtx.createOscillator(); 
+        const gainNode = audioCtx.createGain();
+        osc.connect(gainNode); 
+        gainNode.connect(audioCtx.destination);
+        
+        if (type === 'warn') { 
+            osc.type = 'square'; 
+            osc.frequency.setValueAtTime(400, audioCtx.currentTime); 
+            osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.3); 
+            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); 
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3); 
+            osc.start(audioCtx.currentTime); 
+            osc.stop(audioCtx.currentTime + 0.3);
+        } else { 
+            osc.type = 'sine'; 
+            osc.frequency.setValueAtTime(600, audioCtx.currentTime); 
+            osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1); 
+            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); 
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2); 
+            osc.start(audioCtx.currentTime); 
+            osc.stop(audioCtx.currentTime + 0.2); 
+        }
     } catch(e) {}
 }
 
 async function getHWID() {
-    let id = localStorage.getItem("device_hw"); if(id) return id;
-    const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
-    ctx.textBaseline = "top"; ctx.font = "14px 'Arial'"; ctx.textBaseline = "alphabetic";
-    ctx.fillStyle = "#f60"; ctx.fillRect(125,1,62,20);
-    ctx.fillStyle = "#069"; ctx.fillText("vip-tool", 2, 15);
-    const dataURL = canvas.toDataURL(); const str = navigator.userAgent + screen.width + "x" + screen.height + navigator.language + dataURL;
+    let id = localStorage.getItem("device_hw"); 
+    if(id) return id;
+    
+    const canvas = document.createElement('canvas'); 
+    const ctx = canvas.getContext('2d');
+    ctx.textBaseline = "top"; 
+    ctx.font = "14px 'Arial'"; 
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "#f60"; 
+    ctx.fillRect(125,1,62,20);
+    ctx.fillStyle = "#069"; 
+    ctx.fillText("vip-tool", 2, 15);
+    
+    const dataURL = canvas.toDataURL(); 
+    const str = navigator.userAgent + screen.width + "x" + screen.height + navigator.language + dataURL;
     let hash = 0;
-    for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash = hash & hash; }
-    id = "HWID-" + Math.abs(hash).toString(16).toUpperCase(); localStorage.setItem("device_hw", id); return id;
+    
+    for (let i = 0; i < str.length; i++) { 
+        hash = ((hash << 5) - hash) + str.charCodeAt(i); 
+        hash = hash & hash; 
+    }
+    
+    id = "HWID-" + Math.abs(hash).toString(16).toUpperCase(); 
+    localStorage.setItem("device_hw", id); 
+    return id;
 }
 
-const gameSelectOverlay = document.getElementById("gameSelectOverlay"); const entryOverlay = document.getElementById("entryOverlay");
-const entryMsg = document.getElementById("entryMsg"); const checkBtn = document.getElementById("checkBtn");
-const keyInput = document.getElementById("keyInput"); const gameFrame = document.getElementById("game-frame");
-const toolPanel = document.getElementById("tool-panel"); const toggleBtn = document.getElementById("toggle-tool");
+const gameSelectOverlay = document.getElementById("gameSelectOverlay"); 
+const entryOverlay = document.getElementById("entryOverlay");
+const entryMsg = document.getElementById("entryMsg"); 
+const checkBtn = document.getElementById("checkBtn");
+const keyInput = document.getElementById("keyInput"); 
+const gameFrame = document.getElementById("game-frame");
+const toolPanel = document.getElementById("tool-panel"); 
+const toggleBtn = document.getElementById("toggle-tool");
 
-document.getElementById("btn-select-lc79").addEventListener("click", () => { selectedGame = 'lc79'; document.getElementById("gameNameDisplay").innerText = "LC79"; document.getElementById("gameNameSub").innerText = "LC79"; hide(gameSelectOverlay); show(entryOverlay); });
-document.getElementById("btn-select-xd88").addEventListener("click", () => { selectedGame = 'xd88'; document.getElementById("gameNameDisplay").innerText = "XOCDIA88"; document.getElementById("gameNameSub").innerText = "XOCDIA88"; hide(gameSelectOverlay); show(entryOverlay); });
-document.getElementById("btn-select-betvip").addEventListener("click", () => { selectedGame = 'betvip'; document.getElementById("gameNameDisplay").innerText = "BETVIP"; document.getElementById("gameNameSub").innerText = "BETVIP"; hide(gameSelectOverlay); show(entryOverlay); });
-document.getElementById("btn-select-sunwin").addEventListener("click", () => { selectedGame = 'sunwin'; document.getElementById("gameNameDisplay").innerText = "SUNWIN"; document.getElementById("gameNameSub").innerText = "SUNWIN"; hide(gameSelectOverlay); show(entryOverlay); });
-document.getElementById("backToGameSelectBtn").addEventListener("click", () => { hide(entryOverlay); show(gameSelectOverlay); keyInput.value = ""; entryMsg.innerText = ""; });
+document.getElementById("btn-select-lc79").addEventListener("click", () => { 
+    selectedGame = 'lc79'; 
+    document.getElementById("gameNameDisplay").innerText = "LC79"; 
+    document.getElementById("gameNameSub").innerText = "LC79"; 
+    hide(gameSelectOverlay); 
+    show(entryOverlay); 
+});
 
-function show(el){ el.style.display = ""; } function hide(el){ el.style.display = "none"; }
+document.getElementById("btn-select-xd88").addEventListener("click", () => { 
+    selectedGame = 'xd88'; 
+    document.getElementById("gameNameDisplay").innerText = "XOCDIA88"; 
+    document.getElementById("gameNameSub").innerText = "XOCDIA88"; 
+    hide(gameSelectOverlay); 
+    show(entryOverlay); 
+});
 
-let expireTimer = null; let autoRefreshInterval = null;
+document.getElementById("btn-select-betvip").addEventListener("click", () => { 
+    selectedGame = 'betvip'; 
+    document.getElementById("gameNameDisplay").innerText = "BETVIP"; 
+    document.getElementById("gameNameSub").innerText = "BETVIP"; 
+    hide(gameSelectOverlay); 
+    show(entryOverlay); 
+});
+
+document.getElementById("btn-select-sunwin").addEventListener("click", () => { 
+    selectedGame = 'sunwin'; 
+    document.getElementById("gameNameDisplay").innerText = "SUNWIN"; 
+    document.getElementById("gameNameSub").innerText = "SUNWIN"; 
+    hide(gameSelectOverlay); 
+    show(entryOverlay); 
+});
+
+document.getElementById("backToGameSelectBtn").addEventListener("click", () => { 
+    hide(entryOverlay); 
+    show(gameSelectOverlay); 
+    keyInput.value = ""; 
+    entryMsg.innerText = ""; 
+});
+
+function show(el){ 
+    el.style.display = ""; 
+} 
+
+function hide(el){ 
+    el.style.display = "none"; 
+}
+
+let expireTimer = null; 
+let autoRefreshInterval = null;
+
 document.getElementById('auto-refresh-checkbox').addEventListener('change', (e) => {
-    if(e.target.checked) { autoRefreshInterval = setInterval(fetchApiAndPredict, 10000); showToast('Đã bật Auto (10s)', 'success'); fetchApiAndPredict(); } 
-    else { clearInterval(autoRefreshInterval); showToast('Đã tắt Auto', 'success'); }
+    if(e.target.checked) { 
+        autoRefreshInterval = setInterval(fetchApiAndPredict, 10000); 
+        showToast('Đã bật Auto (10s)', 'success'); 
+        fetchApiAndPredict(); 
+    } else { 
+        clearInterval(autoRefreshInterval); 
+        showToast('Đã tắt Auto', 'success'); 
+    }
 });
 
 function startExpireCountdown(expireTs){
     if(expireTimer) clearInterval(expireTimer);
+    
     function update(){
         const diff = expireTs - Date.now();
-        if(diff <= 0){ document.getElementById("expireBadge").innerText = "HẾT HẠN"; document.getElementById("expireBadge").style.color = "#f87171"; clearInterval(expireTimer); showToast("⏳ MÃ KEY ĐÃ HẾT HẠN. NGẮT KẾT NỐI...", "error"); setTimeout(() => location.reload(), 2000); return; }
-        const totalSec = Math.floor(diff/1000); const days = Math.floor(totalSec / 86400), hours = Math.floor((totalSec % 86400) / 3600), mins = Math.floor((totalSec % 3600) / 60);
-        document.getElementById("expireBadge").innerText = (days>0? days+"D ":"") + String(hours).padStart(2,"0")+":"+String(mins).padStart(2,"0");
-    } update(); expireTimer = setInterval(update, 1000);
+        if(diff <= 0){ 
+            document.getElementById("expireBadge").innerText = "HẾT HẠN"; 
+            document.getElementById("expireBadge").style.color = "#f87171"; 
+            clearInterval(expireTimer); 
+            showToast("⏳ MÃ KEY ĐÃ HẾT HẠN. NGẮT KẾT NỐI...", "error"); 
+            setTimeout(() => location.reload(), 2000); 
+            return; 
+        }
+        const totalSec = Math.floor(diff/1000); 
+        const days = Math.floor(totalSec / 86400);
+        const hours = Math.floor((totalSec % 86400) / 3600);
+        const mins = Math.floor((totalSec % 3600) / 60);
+        document.getElementById("expireBadge").innerText = (days > 0 ? days + "D " : "") + String(hours).padStart(2,"0") + ":" + String(mins).padStart(2,"0");
+    } 
+    
+    update(); 
+    expireTimer = setInterval(update, 1000);
 }
 
 async function checkKeyFlow(){
     const key = (keyInput.value || "").trim();
-    if(!key){ entryMsg.className="msg error"; entryMsg.innerText="! CHƯA NHẬP KEY KHỚP LỆNH"; return; }
-    entryMsg.className="msg"; entryMsg.innerText="ĐANG GIẢI MÃ BẢO MẬT..."; checkBtn.disabled = true;
-    try{
-        const hwid = await getHWID(); const timestamp = Date.now(); const signature = generateSignature(hwid, timestamp);
-        const resp = await fetch(KEY_SERVER_URL + "/check-key", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ key, hwid, game: selectedGame, timestamp, signature }) });
+    if(!key){ 
+        entryMsg.className="msg error"; 
+        entryMsg.innerText="! CHƯA NHẬP KEY KHỚP LỆNH"; 
+        return; 
+    }
+    
+    entryMsg.className="msg"; 
+    entryMsg.innerText="ĐANG GIẢI MÃ BẢO MẬT..."; 
+    checkBtn.disabled = true;
+    
+    try {
+        const hwid = await getHWID(); 
+        const timestamp = Date.now(); 
+        const signature = generateSignature(hwid, timestamp);
+        
+        const resp = await fetch(KEY_SERVER_URL + "/check-key", { 
+            method: "POST", 
+            headers: {"Content-Type":"application/json"}, 
+            body: JSON.stringify({ key, hwid, game: selectedGame, timestamp, signature }) 
+        });
+        
         const data = await resp.json();
+        
         if(data && data.success){
-            sessionToken = data.token; currentKey = key;
-            if(data.expire) startExpireCountdown(data.expire); else document.getElementById("expireBadge").innerText = "VIP ∞";
-            entryMsg.className = "msg success"; entryMsg.innerText = `✔️ XÁC THỰC THÀNH CÔNG. ĐANG CHÈN SCRIPT...`;
-            setTimeout(()=> { hide(entryOverlay); gameFrame.src = (selectedGame === 'lc79' ? "https://lc79b.bet/" : selectedGame === 'xd88' ? "https://play.xocdia88.green/" : selectedGame === 'betvip' ? "https://play.betvip.fit/" : "https://web.sunwin.lt/?affId=Sunwin"); document.getElementById("tool-title").innerText = `⚡ ${selectedGame.toUpperCase()} PREDICTOR`; show(gameFrame); setTimeout(()=>{ toolPanel.style.display = "block"; toolPanel.setAttribute("aria-hidden","false"); toggleBtn.style.display = "none"; window.lastDataString = ""; }, 300); }, 1200);
-        } else { entryMsg.className="msg error"; entryMsg.innerText = data && data.message ? ("❌ " + data.message) : "LỖI: KEY KHÔNG HỢP LỆ"; }
-    }catch(err){ entryMsg.className="msg error"; entryMsg.innerText = "LỖI KẾT NỐI MÁY CHỦ"; } finally { checkBtn.disabled = false; }
+            sessionToken = data.token; 
+            currentKey = key;
+            
+            if(data.expire) {
+                startExpireCountdown(data.expire); 
+            } else {
+                document.getElementById("expireBadge").innerText = "VIP ∞";
+            }
+            
+            entryMsg.className = "msg success"; 
+            entryMsg.innerText = `✔️ XÁC THỰC THÀNH CÔNG. ĐANG CHÈN SCRIPT...`;
+            
+            setTimeout(() => { 
+                hide(entryOverlay); 
+                gameFrame.src = (selectedGame === 'lc79' ? "https://lc79b.bet/" : selectedGame === 'xd88' ? "https://play.xocdia88.green/" : selectedGame === 'betvip' ? "https://play.betvip.fit/" : "https://web.sunwin.lt/?affId=Sunwin"); 
+                document.getElementById("tool-title").innerText = `⚡ ${selectedGame.toUpperCase()} PREDICTOR`; 
+                show(gameFrame); 
+                
+                setTimeout(() => { 
+                    toolPanel.style.display = "block"; 
+                    toolPanel.setAttribute("aria-hidden","false"); 
+                    toggleBtn.style.display = "none"; 
+                    window.lastDataString = ""; 
+                }, 300); 
+            }, 1200);
+            
+        } else { 
+            entryMsg.className="msg error"; 
+            entryMsg.innerText = data && data.message ? ("❌ " + data.message) : "LỖI: KEY KHÔNG HỢP LỆ"; 
+        }
+    } catch(err) { 
+        entryMsg.className="msg error"; 
+        entryMsg.innerText = "LỖI KẾT NỐI MÁY CHỦ"; 
+    } finally { 
+        checkBtn.disabled = false; 
+    }
 }
 
-keyInput.addEventListener("keydown", (e) => { if(e.key === "Enter") checkKeyFlow(); }); checkBtn.addEventListener("click", checkKeyFlow);
+keyInput.addEventListener("keydown", (e) => { 
+    if(e.key === "Enter") checkKeyFlow(); 
+}); 
 
+checkBtn.addEventListener("click", checkKeyFlow);
+
+// BỔ SUNG CÁC HÀM XỬ LÝ GIAO DIỆN (THU GỌN / NẰM NGANG)
 function togglePanel(){
-    if(toolPanel.style.display === "none" || toolPanel.getAttribute('aria-hidden') === 'true'){ toolPanel.style.display = "block"; toolPanel.setAttribute('aria-hidden','false'); toggleBtn.style.display = "none"; } 
-    else { toolPanel.style.display = "none"; toolPanel.setAttribute('aria-hidden','true'); toggleBtn.style.display = "block"; }
+    if(toolPanel.style.display === "none" || toolPanel.getAttribute('aria-hidden') === 'true'){ 
+        toolPanel.style.display = "block"; 
+        toolPanel.setAttribute('aria-hidden','false'); 
+        toggleBtn.style.display = "none"; 
+    } else { 
+        toolPanel.style.display = "none"; 
+        toolPanel.setAttribute('aria-hidden','true'); 
+        toggleBtn.style.display = "block"; 
+    }
 }
 
-function getMlsClass(kq) { return (kq === "Tài" || kq === "T") ? "color-tai" : (kq === "Xỉu" || kq === "X") ? "color-xiu" : "color-off"; }
+function toggleCompactMode() { 
+    panel.classList.toggle('compact-mode'); 
+}
+
+function toggleOrientation() { 
+    panel.classList.toggle('horizontal'); 
+    const btn = document.getElementById('orientBtn'); 
+    if (panel.classList.contains('horizontal')) {
+        btn.title = "Chế độ ngang"; 
+    } else {
+        btn.title = "Chế độ dọc"; 
+    }
+}
+
+function getMlsClass(kq) { 
+    return (kq === "Tài" || kq === "T") ? "color-tai" : (kq === "Xỉu" || kq === "X") ? "color-xiu" : "color-off"; 
+}
 
 // Lắng nghe sự kiện bật/tắt ở Cài đặt Nâng cao
-document.querySelectorAll('.logic-toggle').forEach(el => el.addEventListener('change', () => { if(window.lastPredictData) renderUI(window.lastPredictData); }));
-document.getElementById('api-source-select').addEventListener('change', () => { window.lastDataString = ""; document.getElementById("btn-auto").innerHTML = "🔄 ĐANG ĐỔI LUỒNG API..."; setTimeout(fetchApiAndPredict, 500); });
-document.getElementById('btn-advanced-toggle').addEventListener('click', ()=>{ const sec = document.getElementById('advanced-section'); const isHidden = sec.style.display === 'none'; sec.style.display = isHidden ? 'block' : 'none'; document.getElementById('btn-advanced-toggle').innerHTML = isHidden ? '🛠️ ĐÓNG THIẾT LẬP NÂNG CAO' : '🛠️ MỞ THIẾT LẬP NÂNG CAO'; });
+document.querySelectorAll('.logic-toggle').forEach(el => el.addEventListener('change', () => { 
+    if(window.lastPredictData) renderUI(window.lastPredictData); 
+}));
+
+document.getElementById('api-source-select').addEventListener('change', () => { 
+    window.lastDataString = ""; 
+    document.getElementById("btn-auto").innerHTML = "🔄 ĐANG ĐỔI LUỒNG API..."; 
+    setTimeout(fetchApiAndPredict, 500); 
+});
+
+document.getElementById('btn-advanced-toggle').addEventListener('click', () => { 
+    const sec = document.getElementById('advanced-section'); 
+    const isHidden = sec.style.display === 'none'; 
+    sec.style.display = isHidden ? 'block' : 'none'; 
+    document.getElementById('btn-advanced-toggle').innerHTML = isHidden ? '🛠️ ĐÓNG THIẾT LẬP NÂNG CAO' : '🛠️ MỞ THIẾT LẬP NÂNG CAO'; 
+});
 
 async function fetchApiAndPredict() {
-    const btn = document.getElementById("btn-auto"); btn.innerHTML = "⏳ DECODING DATA..."; btn.style.opacity = "0.7";
+    const btn = document.getElementById("btn-auto"); 
+    btn.innerHTML = "⏳ DECODING DATA..."; 
+    btn.style.opacity = "0.7";
+    
     const source = document.getElementById("api-source-select").value || 'normal';
+    const seqLength = parseInt(document.getElementById("seq-length-select").value, 10) || 13; // Bổ sung bắt dữ liệu từ Select Option
     const invertChain = document.getElementById('invert-chain-checkbox').checked;
 
     try {
-        const hwid = await getHWID(); const timestamp = Date.now(); const signature = generateSignature(hwid, timestamp);
-        const predictResp = await fetch(KEY_SERVER_URL + "/predict", { method: "POST", headers: { "Content-Type":"application/json", "Authorization": "Bearer " + sessionToken }, body: JSON.stringify({ source, seqLength: 13, invertChain, timestamp, signature, game: selectedGame }) });
+        const hwid = await getHWID(); 
+        const timestamp = Date.now(); 
+        const signature = generateSignature(hwid, timestamp);
+        
+        const predictResp = await fetch(KEY_SERVER_URL + "/predict", { 
+            method: "POST", 
+            headers: { "Content-Type":"application/json", "Authorization": "Bearer " + sessionToken }, 
+            // Truyền seqLength động xuống server
+            body: JSON.stringify({ source, seqLength: seqLength, invertChain, timestamp, signature, game: selectedGame }) 
+        });
+        
         const data = await predictResp.json();
         
         if (data && data.success) {
             let currentDataString = data.chuoiN.join("") + "-" + (data.lastDice ? data.lastDice.join("") : "");
-            if (window.lastDataString === currentDataString) { showToast("CẦU CHƯA NHẢY. ĐANG ĐỢI VÁN MỚI...", "info"); }
-            else { if (window.lastDataString !== "") showToast("PHÁT HIỆN TÍN HIỆU! ĐANG ÉP DATA...", "success"); window.lastDataString = currentDataString; }
+            
+            if (window.lastDataString === currentDataString) { 
+                showToast("CẦU CHƯA NHẢY. ĐANG ĐỢI VÁN MỚI...", "info"); 
+            } else { 
+                if (window.lastDataString !== "") {
+                    showToast("PHÁT HIỆN TÍN HIỆU! ĐANG ÉP DATA...", "success"); 
+                }
+                window.lastDataString = currentDataString; 
+            }
+            
             window.lastPredictData = data;
             renderUI(data);
         } else {
             showToast(`API ERROR: ${data.message || 'Hệ thống gián đoạn.'}`, 'error');
             if (data.kicked) setTimeout(() => { location.reload(); }, 2500); 
         }
-    } catch (e) { showToast("LỖI: MẤT KẾT NỐI SERVER GIẢI MÃ.", "error"); }
-    btn.innerHTML = "🔄 KÍCH HOẠT QUÉT CẦU"; btn.style.opacity = "1";
+    } catch (e) { 
+        showToast("LỖI: MẤT KẾT NỐI SERVER GIẢI MÃ.", "error"); 
+    }
+    
+    btn.innerHTML = "🔄 KÍCH HOẠT QUÉT CẦU"; 
+    btn.style.opacity = "1";
 }
 
 // Hàm Vẽ Giao Diện Dựa Vào Công Tắc Bật/Tắt
@@ -352,20 +1189,35 @@ function renderUI(data) {
     const useD = document.getElementById('toggle-dice').checked;
     const useF = document.getElementById('toggle-final').checked;
     const strictMode = document.getElementById('strict-mode').checked;
+    const safeMode = document.getElementById('safe-mode').checked;
     const hidePercent = document.getElementById('hide-percent').checked;
 
-    const L1 = data.logic1 || {}; const L2 = data.logic2 || {}; const D = data.dice || {};
+    const L1 = data.logic1 || {}; 
+    const L2 = data.logic2 || {}; 
+    const D = data.dice || {};
     
     let k1 = useL1 ? L1.ket_qua : "ĐÃ TẮT";
     let k2 = useL2 ? L2.ket_qua : "ĐÃ TẮT";
     let kd = useD ? D.ket_qua : "ĐÃ TẮT";
 
+    // --- XỬ LÝ CHẾ ĐỘ AN TOÀN (SAFE MODE) ---
+    if (safeMode) {
+        let maxL1 = Math.max(L1.ptTai || 0, L1.ptXiu || 0);
+        let maxL2 = Math.max(L2.ptTai || 0, L2.ptXiu || 0);
+        
+        if (useL1 && k1 !== "Không rõ" && maxL1 < 70) k1 = "Bỏ (< 70%)";
+        if (useL2 && k2 !== "Không rõ" && maxL2 < 70) k2 = "Bỏ (< 70%)";
+    }
+
     let finalKQ = "Không rõ";
+    
     if (useF) {
-        let votes = { "Tài": 0, "Xỉu": 0 }; let activeCount = 0;
-        if (useL1 && k1 !== "Không rõ" && k1 !== "ĐÃ TẮT") { votes[k1]++; activeCount++; }
-        if (useL2 && k2 !== "Không rõ" && k2 !== "ĐÃ TẮT") { votes[k2]++; activeCount++; }
-        if (useD && kd !== "Không rõ" && kd !== "ĐÃ TẮT") { votes[kd]++; activeCount++; }
+        let votes = { "Tài": 0, "Xỉu": 0 }; 
+        let activeCount = 0;
+        
+        if (useL1 && (k1 === "Tài" || k1 === "Xỉu")) { votes[k1]++; activeCount++; }
+        if (useL2 && (k2 === "Tài" || k2 === "Xỉu")) { votes[k2]++; activeCount++; }
+        if (useD && (kd === "Tài" || kd === "Xỉu")) { votes[kd]++; activeCount++; }
         
         if (strictMode) {
             if (votes["Tài"] === activeCount && activeCount > 0) finalKQ = "Tài";
@@ -374,9 +1226,11 @@ function renderUI(data) {
         } else {
             if (votes["Tài"] > votes["Xỉu"]) finalKQ = "Tài";
             else if (votes["Xỉu"] > votes["Tài"]) finalKQ = "Xỉu";
-            else if (activeCount > 0) finalKQ = (useL2 && k2!=="Không rõ") ? k2 : k1; 
+            else if (activeCount > 0) finalKQ = (useL2 && (k2 === "Tài" || k2 === "Xỉu")) ? k2 : (k1 === "Tài" || k1 === "Xỉu" ? k1 : "Không rõ"); 
         }
-    } else finalKQ = "ĐÃ TẮT";
+    } else {
+        finalKQ = "ĐÃ TẮT";
+    }
 
     let html = `
         <div class="info-row hide-on-compact" style="min-width:140px; margin-bottom: 10px;">
@@ -388,42 +1242,127 @@ function renderUI(data) {
 
     // Ô Logic 1
     if (useL1) {
-        html += `<div class="pred-box"><div class="pred-title">📊 LOGIC 1 (V1)</div><div class="pred-value ${getMlsClass(k1)}">${k1}</div>${hidePercent ? '' : `<div class="pred-sub">T: ${L1.ptTai}% | X: ${L1.ptXiu}%</div>`}</div>`;
-    } else { html += `<div class="pred-box" style="opacity: 0.4;"><div class="pred-title">📊 LOGIC 1</div><div class="pred-value color-off">ĐÃ TẮT</div></div>`; }
+        html += `<div class="pred-box">
+                    <div class="pred-title">📊 LOGIC 1 (V1)</div>
+                    <div class="pred-value ${getMlsClass(k1)}">${k1}</div>
+                    ${hidePercent ? '' : `<div class="pred-sub">T: ${L1.ptTai}% | X: ${L1.ptXiu}%</div>`}
+                 </div>`;
+    } else { 
+        html += `<div class="pred-box" style="opacity: 0.4;">
+                    <div class="pred-title">📊 LOGIC 1</div>
+                    <div class="pred-value color-off">ĐÃ TẮT</div>
+                 </div>`; 
+    }
 
     // Ô Logic 2
     if (useL2) {
-        html += `<div class="pred-box"><div class="pred-title">🧠 LOGIC 2 (OKI)</div><div class="pred-value ${getMlsClass(k2)}">${k2}</div>${hidePercent ? '' : `<div class="pred-sub">T: ${L2.ptTai}% | X: ${L2.ptXiu}%</div>`}</div>`;
-    } else { html += `<div class="pred-box" style="opacity: 0.4;"><div class="pred-title">🧠 LOGIC 2 (OKI)</div><div class="pred-value color-off">ĐÃ TẮT</div></div>`; }
+        html += `<div class="pred-box">
+                    <div class="pred-title">🧠 LOGIC 2 (OKI)</div>
+                    <div class="pred-value ${getMlsClass(k2)}">${k2}</div>
+                    ${hidePercent ? '' : `<div class="pred-sub">T: ${L2.ptTai}% | X: ${L2.ptXiu}%</div>`}
+                 </div>`;
+    } else { 
+        html += `<div class="pred-box" style="opacity: 0.4;">
+                    <div class="pred-title">🧠 LOGIC 2 (OKI)</div>
+                    <div class="pred-value color-off">ĐÃ TẮT</div>
+                 </div>`; 
+    }
 
     // Ô Xúc xắc
     if (useD) {
-        html += `<div class="pred-box" style="grid-column: span 2; padding: 10px;"><div class="pred-title">🎲 PHÂN TÍCH XÚC XẮC</div><div class="pred-value ${getMlsClass(kd)}">${kd}</div><div class="pred-sub">Tổng: ${D.tong} Point</div></div>`;
-    } else { html += `<div class="pred-box" style="grid-column: span 2; padding: 10px; opacity: 0.4;"><div class="pred-title">🎲 PHÂN TÍCH XÚC XẮC</div><div class="pred-value color-off">ĐÃ TẮT</div></div>`; }
+        html += `<div class="pred-box hide-on-compact" style="grid-column: span 2; padding: 10px;">
+                    <div class="pred-title">🎲 PHÂN TÍCH XÚC XẮC</div>
+                    <div class="pred-value ${getMlsClass(kd)}">${kd}</div>
+                    <div class="pred-sub">Tổng: ${D.tong} Point</div>
+                 </div>`;
+    } else { 
+        html += `<div class="pred-box hide-on-compact" style="grid-column: span 2; padding: 10px; opacity: 0.4;">
+                    <div class="pred-title">🎲 PHÂN TÍCH XÚC XẮC</div>
+                    <div class="pred-value color-off">ĐÃ TẮT</div>
+                 </div>`; 
+    }
 
     // Ô Chốt Tổng hợp
     if (useF) {
-        html += `<div class="pred-box pred-final"><div class="pred-title" style="color: var(--gold);">🔥 CHỐT KẾT QUẢ TỔNG HỢP 🔥</div><div class="pred-value ${getMlsClass(finalKQ)}" style="font-size: 28px;">${finalKQ}</div></div>`;
-    } else { html += `<div class="pred-box pred-final" style="opacity: 0.4;"><div class="pred-title">🔥 CHỐT KẾT QUẢ TỔNG HỢP 🔥</div><div class="pred-value color-off">ĐÃ TẮT</div></div>`; }
+        html += `<div class="pred-box pred-final">
+                    <div class="pred-title" style="color: var(--gold);">🔥 CHỐT KẾT QUẢ TỔNG HỢP 🔥</div>
+                    <div class="pred-value ${getMlsClass(finalKQ)}" style="font-size: 28px;">${finalKQ}</div>
+                 </div>`;
+    } else { 
+        html += `<div class="pred-box pred-final" style="opacity: 0.4;">
+                    <div class="pred-title">🔥 CHỐT KẾT QUẢ TỔNG HỢP 🔥</div>
+                    <div class="pred-value color-off">ĐÃ TẮT</div>
+                 </div>`; 
+    }
 
     html += `</div>`;
 
     // Xử lý Cảnh Báo
-    if (useL1 && L1.cau_bip) { html += `<div class="info-row" style="border: 1px dashed #f87171; background: rgba(248,113,113,0.1); margin-top: 10px;"><div style="color:#f87171; font-weight:bold; font-size:13px;">⚠️ L1 ALERT: ${L1.cau_bip}</div></div>`; playBeep('warn'); }
-    if (useL2 && L2.cau_bip) { html += `<div class="info-row" style="border: 1px dashed #f87171; background: rgba(248,113,113,0.1); margin-top: 10px;"><div style="color:#f87171; font-weight:bold; font-size:13px;">⚠️ L2 ALERT: ${L2.cau_bip}</div></div>`; playBeep('warn'); }
+    if (useL1 && L1.cau_bip) { 
+        html += `<div class="info-row hide-on-compact" style="border: 1px dashed #f87171; background: rgba(248,113,113,0.1); margin-top: 10px;">
+                    <div style="color:#f87171; font-weight:bold; font-size:13px;">⚠️ L1 ALERT: ${L1.cau_bip}</div>
+                 </div>`; 
+        playBeep('warn'); 
+    }
+    if (useL2 && L2.cau_bip) { 
+        html += `<div class="info-row hide-on-compact" style="border: 1px dashed #f87171; background: rgba(248,113,113,0.1); margin-top: 10px;">
+                    <div style="color:#f87171; font-weight:bold; font-size:13px;">⚠️ L2 ALERT: ${L2.cau_bip}</div>
+                 </div>`; 
+        playBeep('warn'); 
+    }
 
     resultBox.innerHTML = html;
 }
 
-let isDragging=false, offsetX=0, offsetY=0; const panel=document.getElementById("tool-panel"); const header=document.getElementById("panel-header");
-function changeScale(d) { let c = parseFloat(getComputedStyle(panel).getPropertyValue('--panel-scale')) || 1; panel.style.setProperty('--panel-scale', Math.min(2, Math.max(0.6, +(c + d).toFixed(2)))); }
-function resetScale() { panel.style.setProperty('--panel-scale', 1); }
-header.addEventListener('mousedown',(e)=>{ isDragging=true; const r=panel.getBoundingClientRect(); offsetX=e.clientX-r.left; offsetY=e.clientY-r.top; panel.style.right='auto'; });
-document.addEventListener('mousemove',(e)=>{ if(!isDragging) return; panel.style.left=(e.clientX-offsetX)+'px'; panel.style.top=(e.clientY-offsetY)+'px'; });
-document.addEventListener('mouseup',()=>{ isDragging=false; });
-header.addEventListener('touchstart',(ev)=>{ const t=ev.touches[0]; isDragging=true; const r=panel.getBoundingClientRect(); offsetX=t.clientX-r.left; offsetY=t.clientY-r.top; panel.style.right='auto'; }, {passive:true});
-document.addEventListener('touchmove',(ev)=>{ if(!isDragging) return; const t=ev.touches[0]; panel.style.left=(t.clientX-offsetX)+'px'; panel.style.top=(t.clientY-offsetY)+'px'; }, {passive:true});
-document.addEventListener('touchend',()=>{ isDragging=false; });
+const panel = document.getElementById("tool-panel"); 
+const header = document.getElementById("panel-header");
+
+function changeScale(d) { 
+    let c = parseFloat(getComputedStyle(panel).getPropertyValue('--panel-scale')) || 1; 
+    panel.style.setProperty('--panel-scale', Math.min(2, Math.max(0.6, +(c + d).toFixed(2)))); 
+}
+
+function resetScale() { 
+    panel.style.setProperty('--panel-scale', 1); 
+}
+
+header.addEventListener('mousedown', (e) => { 
+    isDragging = true; 
+    const r = panel.getBoundingClientRect(); 
+    offsetX = e.clientX - r.left; 
+    offsetY = e.clientY - r.top; 
+    panel.style.right = 'auto'; 
+});
+
+document.addEventListener('mousemove', (e) => { 
+    if(!isDragging) return; 
+    panel.style.left = (e.clientX - offsetX) + 'px'; 
+    panel.style.top = (e.clientY - offsetY) + 'px'; 
+});
+
+document.addEventListener('mouseup', () => { 
+    isDragging = false; 
+});
+
+header.addEventListener('touchstart', (ev) => { 
+    const t = ev.touches[0]; 
+    isDragging = true; 
+    const r = panel.getBoundingClientRect(); 
+    offsetX = t.clientX - r.left; 
+    offsetY = t.clientY - r.top; 
+    panel.style.right = 'auto'; 
+}, {passive:true});
+
+document.addEventListener('touchmove', (ev) => { 
+    if(!isDragging) return; 
+    const t = ev.touches[0]; 
+    panel.style.left = (t.clientX - offsetX) + 'px'; 
+    panel.style.top = (t.clientY - offsetY) + 'px'; 
+}, {passive:true});
+
+document.addEventListener('touchend', () => { 
+    isDragging = false; 
+});
 </script>
 </body>
 </html>
