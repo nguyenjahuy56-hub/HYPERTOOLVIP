@@ -372,7 +372,7 @@
             align-items: center; 
             padding: 10px 14px; 
             border-radius: 8px; 
-            text-align: right;
+            text-align: right; 
         }
         #tool-panel.compact-mode .pred-title { 
             font-size: 12px; 
@@ -423,7 +423,7 @@
             color: var(--neon-blue); 
             border: 1px solid rgba(0,243,255,0.3); 
             font-weight: 600; 
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Orbitron', sans-serif; 
         }
         
         .controls button { 
@@ -512,7 +512,7 @@
             text-align: center; 
             border: 1px solid rgba(255,255,255,0.08); 
             box-shadow: inset 0 0 15px rgba(0,0,0,0.4); 
-            transition: all 0.3s;
+            transition: all 0.3s; 
         }
 
         .pred-title { 
@@ -784,6 +784,14 @@
                         <label><input type="checkbox" id="toggle-dice" class="logic-toggle" checked /> Hiện Xúc Xắc</label>
                         <label><input type="checkbox" id="toggle-final" class="logic-toggle" checked /> Bật Tổng Hợp</label>
                     </div>
+                    
+                    <div class="control-row tiny" style="margin-bottom: 8px; border-top: 1px dashed #444; padding-top: 8px;">
+                        <span style="color:var(--gold)">Trọng số Tổng hợp:</span>
+                        <label>L1: <input type="number" id="weight-l1" value="1" min="0" max="10" step="0.5" style="width:45px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid #4b5563; border-radius:4px; text-align:center; padding: 2px;" class="logic-toggle"></label>
+                        <label>L2: <input type="number" id="weight-l2" value="1" min="0" max="10" step="0.5" style="width:45px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid #4b5563; border-radius:4px; text-align:center; padding: 2px;" class="logic-toggle"></label>
+                        <label>Dice: <input type="number" id="weight-d" value="1" min="0" max="10" step="0.5" style="width:45px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid #4b5563; border-radius:4px; text-align:center; padding: 2px;" class="logic-toggle"></label>
+                    </div>
+
                     <div class="control-row tiny" style="margin-bottom: 8px; border-top: 1px dashed #444; padding-top: 8px;">
                         <span style="color:var(--gold)">Tính năng phụ:</span>
                         <label><input type="checkbox" id="strict-mode" class="logic-toggle" /> Ép đồng thuận (Chỉ chốt khi trùng màu)</label>
@@ -861,7 +869,8 @@ function showToast(msg, type = 'info') {
 let audioCtx = null;
 function playBeep(type) {
     const soundEnabled = document.getElementById('sound-alert-checkbox').checked;
-    if (!soundEnabled) return; // Nếu tắt loa thì không kêu
+    if (!soundEnabled) return; 
+    // Nếu tắt loa thì không kêu
 
     try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -870,7 +879,6 @@ function playBeep(type) {
         const gainNode = audioCtx.createGain();
         osc.connect(gainNode); 
         gainNode.connect(audioCtx.destination);
-        
         if (type === 'warn') { 
             osc.type = 'square'; 
             osc.frequency.setValueAtTime(400, audioCtx.currentTime); 
@@ -894,7 +902,6 @@ function playBeep(type) {
 async function getHWID() {
     let id = localStorage.getItem("device_hw"); 
     if(id) return id;
-    
     const canvas = document.createElement('canvas'); 
     const ctx = canvas.getContext('2d');
     ctx.textBaseline = "top"; 
@@ -908,7 +915,6 @@ async function getHWID() {
     const dataURL = canvas.toDataURL(); 
     const str = navigator.userAgent + screen.width + "x" + screen.height + navigator.language + dataURL;
     let hash = 0;
-    
     for (let i = 0; i < str.length; i++) { 
         hash = ((hash << 5) - hash) + str.charCodeAt(i); 
         hash = hash & hash; 
@@ -935,7 +941,6 @@ document.getElementById("btn-select-lc79").addEventListener("click", () => {
     hide(gameSelectOverlay); 
     show(entryOverlay); 
 });
-
 document.getElementById("btn-select-xd88").addEventListener("click", () => { 
     selectedGame = 'xd88'; 
     document.getElementById("gameNameDisplay").innerText = "XOCDIA88"; 
@@ -943,7 +948,6 @@ document.getElementById("btn-select-xd88").addEventListener("click", () => {
     hide(gameSelectOverlay); 
     show(entryOverlay); 
 });
-
 document.getElementById("btn-select-betvip").addEventListener("click", () => { 
     selectedGame = 'betvip'; 
     document.getElementById("gameNameDisplay").innerText = "BETVIP"; 
@@ -951,7 +955,6 @@ document.getElementById("btn-select-betvip").addEventListener("click", () => {
     hide(gameSelectOverlay); 
     show(entryOverlay); 
 });
-
 document.getElementById("btn-select-sunwin").addEventListener("click", () => { 
     selectedGame = 'sunwin'; 
     document.getElementById("gameNameDisplay").innerText = "SUNWIN"; 
@@ -959,7 +962,6 @@ document.getElementById("btn-select-sunwin").addEventListener("click", () => {
     hide(gameSelectOverlay); 
     show(entryOverlay); 
 });
-
 document.getElementById("backToGameSelectBtn").addEventListener("click", () => { 
     hide(entryOverlay); 
     show(gameSelectOverlay); 
@@ -1003,7 +1005,7 @@ function startExpireCountdown(expireTs){
             return; 
         }
         const totalSec = Math.floor(diff/1000); 
-        const days = Math.floor(totalSec / 86400);
+        const days = Math.floor(totalSec / 86400); 
         const hours = Math.floor((totalSec % 86400) / 3600);
         const mins = Math.floor((totalSec % 3600) / 60);
         document.getElementById("expireBadge").innerText = (days > 0 ? days + "D " : "") + String(hours).padStart(2,"0") + ":" + String(mins).padStart(2,"0");
@@ -1024,7 +1026,6 @@ async function checkKeyFlow(){
     entryMsg.className="msg"; 
     entryMsg.innerText="ĐANG GIẢI MÃ BẢO MẬT..."; 
     checkBtn.disabled = true;
-    
     try {
         const hwid = await getHWID(); 
         const timestamp = Date.now(); 
@@ -1035,7 +1036,6 @@ async function checkKeyFlow(){
             headers: {"Content-Type":"application/json"}, 
             body: JSON.stringify({ key, hwid, game: selectedGame, timestamp, signature }) 
         });
-        
         const data = await resp.json();
         
         if(data && data.success){
@@ -1045,12 +1045,11 @@ async function checkKeyFlow(){
             if(data.expire) {
                 startExpireCountdown(data.expire); 
             } else {
-                document.getElementById("expireBadge").innerText = "VIP ∞";
+                document.getElementById("expireBadge").innerText = "VIP ∞"; 
             }
             
             entryMsg.className = "msg success"; 
             entryMsg.innerText = `✔️ XÁC THỰC THÀNH CÔNG. ĐANG CHÈN SCRIPT...`;
-            
             setTimeout(() => { 
                 hide(entryOverlay); 
                 gameFrame.src = (selectedGame === 'lc79' ? "https://lc79b.bet/" : selectedGame === 'xd88' ? "https://play.xocdia88.green/" : selectedGame === 'betvip' ? "https://play.betvip.fit/" : "https://web.sunwin.lt/?affId=Sunwin"); 
@@ -1064,7 +1063,6 @@ async function checkKeyFlow(){
                     window.lastDataString = ""; 
                 }, 300); 
             }, 1200);
-            
         } else { 
             entryMsg.className="msg error"; 
             entryMsg.innerText = data && data.message ? ("❌ " + data.message) : "LỖI: KEY KHÔNG HỢP LỆ"; 
@@ -1136,9 +1134,8 @@ async function fetchApiAndPredict() {
     const btn = document.getElementById("btn-auto"); 
     btn.innerHTML = "⏳ DECODING DATA..."; 
     btn.style.opacity = "0.7";
-    
     const source = document.getElementById("api-source-select").value || 'normal';
-    const seqLength = parseInt(document.getElementById("seq-length-select").value, 10) || 13; // Bổ sung bắt dữ liệu từ Select Option
+    const seqLength = parseInt(document.getElementById("seq-length-select").value, 10) || 13;
     const invertChain = document.getElementById('invert-chain-checkbox').checked;
 
     try {
@@ -1152,12 +1149,10 @@ async function fetchApiAndPredict() {
             // Truyền seqLength động xuống server
             body: JSON.stringify({ source, seqLength: seqLength, invertChain, timestamp, signature, game: selectedGame }) 
         });
-        
         const data = await predictResp.json();
         
         if (data && data.success) {
             let currentDataString = data.chuoiN.join("") + "-" + (data.lastDice ? data.lastDice.join("") : "");
-            
             if (window.lastDataString === currentDataString) { 
                 showToast("CẦU CHƯA NHẢY. ĐANG ĐỢI VÁN MỚI...", "info"); 
             } else { 
@@ -1181,7 +1176,7 @@ async function fetchApiAndPredict() {
     btn.style.opacity = "1";
 }
 
-// Hàm Vẽ Giao Diện Dựa Vào Công Tắc Bật/Tắt
+// Hàm Vẽ Giao Diện Dựa Vào Công Tắc Bật/Tắt và Trọng Số
 function renderUI(data) {
     const resultBox = document.getElementById("result-box");
     const useL1 = document.getElementById('toggle-logic1').checked;
@@ -1215,18 +1210,33 @@ function renderUI(data) {
         let votes = { "Tài": 0, "Xỉu": 0 }; 
         let activeCount = 0;
         
-        if (useL1 && (k1 === "Tài" || k1 === "Xỉu")) { votes[k1]++; activeCount++; }
-        if (useL2 && (k2 === "Tài" || k2 === "Xỉu")) { votes[k2]++; activeCount++; }
-        if (useD && (kd === "Tài" || kd === "Xỉu")) { votes[kd]++; activeCount++; }
+        // Lấy thông số trọng số từ giao diện
+        const wL1 = parseFloat(document.getElementById('weight-l1').value) || 0;
+        const wL2 = parseFloat(document.getElementById('weight-l2').value) || 0;
+        const wD = parseFloat(document.getElementById('weight-d').value) || 0;
+        
+        if (useL1 && (k1 === "Tài" || k1 === "Xỉu")) { votes[k1] += wL1; activeCount++; }
+        if (useL2 && (k2 === "Tài" || k2 === "Xỉu")) { votes[k2] += wL2; activeCount++; }
+        if (useD && (kd === "Tài" || kd === "Xỉu")) { votes[kd] += wD; activeCount++; }
         
         if (strictMode) {
-            if (votes["Tài"] === activeCount && activeCount > 0) finalKQ = "Tài";
-            else if (votes["Xỉu"] === activeCount && activeCount > 0) finalKQ = "Xỉu";
+            // Chế độ ép đồng thuận: Bỏ qua trọng số, đếm số lượng thực tế để kiểm tra độ đồng nhất
+            let pureVotesTai = 0; let pureVotesXiu = 0;
+            if (useL1 && k1 === "Tài") pureVotesTai++; else if (useL1 && k1 === "Xỉu") pureVotesXiu++;
+            if (useL2 && k2 === "Tài") pureVotesTai++; else if (useL2 && k2 === "Xỉu") pureVotesXiu++;
+            if (useD && kd === "Tài") pureVotesTai++; else if (useD && kd === "Xỉu") pureVotesXiu++;
+
+            if (pureVotesTai === activeCount && activeCount > 0) finalKQ = "Tài";
+            else if (pureVotesXiu === activeCount && activeCount > 0) finalKQ = "Xỉu";
             else finalKQ = "Phân kỳ (Bỏ)";
         } else {
+            // Áp dụng thuật toán cộng dồn trọng số
             if (votes["Tài"] > votes["Xỉu"]) finalKQ = "Tài";
             else if (votes["Xỉu"] > votes["Tài"]) finalKQ = "Xỉu";
-            else if (activeCount > 0) finalKQ = (useL2 && (k2 === "Tài" || k2 === "Xỉu")) ? k2 : (k1 === "Tài" || k1 === "Xỉu" ? k1 : "Không rõ"); 
+            else if (activeCount > 0) {
+                // Xử lý khi hòa điểm (ưu tiên trả về L2 nếu nó có giá trị)
+                finalKQ = (useL2 && (k2 === "Tài" || k2 === "Xỉu")) ? k2 : (k1 === "Tài" || k1 === "Xỉu" ? k1 : "Không rõ"); 
+            }
         }
     } else {
         finalKQ = "ĐÃ TẮT";
