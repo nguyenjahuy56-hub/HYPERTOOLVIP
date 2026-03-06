@@ -168,25 +168,6 @@
         
         .panel-body { padding: 16px; overflow: auto; max-height: calc(100vh - 100px); display: flex; flex-direction: column; gap: 14px; }
 
-        /* THANH STATUS AUTO QUÉT MỚI */
-        .status-bar {
-            background: rgba(0,0,0,0.6); border: 1px solid var(--neon-blue); padding: 12px; border-radius: 10px; 
-            text-align: center; color: var(--neon-blue); font-family: 'Orbitron', sans-serif; font-size: 14px; 
-            box-shadow: 0 0 15px rgba(0,243,255,0.2); text-shadow: 0 0 5px rgba(0,243,255,0.5); 
-            display: flex; align-items: center; justify-content: center; gap: 10px; position: relative; overflow: hidden;
-        }
-        .status-bar::before {
-            content: ""; position: absolute; left: -100%; width: 50%; height: 100%; 
-            background: linear-gradient(90deg, transparent, rgba(0,243,255,0.3), transparent); animation: scanline 2s linear infinite;
-        }
-        @keyframes scanline { 100% { left: 200%; } }
-        
-        .spinner {
-            width: 14px; height: 14px; border: 2px solid var(--neon-blue); 
-            border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
         .select-row { display: flex; gap: 10px; align-items: center; font-size: 14px; font-weight: 600; color: #cbd5e1; }
         select { background: rgba(0,0,0,0.5); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 6px; outline: none; font-family: 'Rajdhani', sans-serif; }
 
@@ -227,6 +208,12 @@
             color: var(--neon-blue); cursor: pointer; font-family: 'Rajdhani', sans-serif; font-weight: bold; transition: all 0.2s; 
         }
         .toggle-btn:hover { background: rgba(0,243,255,0.1); box-shadow: 0 0 10px rgba(0,243,255,0.3); }
+
+        /* BẢNG THỐNG KÊ CSS */
+        .stats-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
+        .stats-table th { background: rgba(0,243,255,0.1); color: var(--neon-blue); padding: 8px; border-bottom: 1px solid rgba(0,243,255,0.3); font-family: 'Orbitron', sans-serif; }
+        .stats-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .stats-wrapper { max-height: 200px; overflow-y: auto; }
 
         #toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100000; pointer-events: none; }
         .toast { 
@@ -338,13 +325,6 @@
 
         <div class="panel-body" id="panel-body">
             
-            <div style="flex: 0 0 100%;">
-                <div id="status-bar" class="status-bar">
-                    <span class="spinner" id="status-spinner"></span> 
-                    <span id="status-text">ĐANG CHỜ KẾT NỐI SERVER...</span>
-                </div>
-            </div>
-
             <div id="panel-settings" style="display:flex; flex-direction:column; gap:12px;">
                 
                 <div style="display:flex; gap:10px;">
@@ -387,6 +367,26 @@
                     </div>
                 </div>
 
+                <button id="btn-stats-toggle" class="toggle-btn" style="width:100%; border-color: var(--gold); color: var(--gold);">📊 XEM THỐNG KÊ LỊCH SỬ</button>
+                
+                <div id="stats-section" style="display:none; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="stats-wrapper">
+                        <table class="stats-table">
+                            <thead>
+                                <tr>
+                                    <th>Thời gian</th>
+                                    <th>Dự đoán</th>
+                                    <th>Thực tế</th>
+                                    <th>Kết quả</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-tbody">
+                                <tr><td colspan="4" style="color:#6b7280; font-style:italic;">Chưa có dữ liệu...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <div class="select-row hide-on-compact" style="align-items:flex-start; gap:10px;">
                     <label style="align-self:flex-start; margin-top: 8px;">Ghi chú:</label>
                     <textarea id="annotation-input" rows="1" style="flex:1; padding:8px; border-radius:8px; background:rgba(0,0,0,0.6); border:1px solid rgba(0,243,255,0.2); color:#fff; resize:vertical; font-family: 'Rajdhani', sans-serif;" placeholder="Ghi nhớ nhịp cầu..."></textarea>
@@ -423,6 +423,7 @@ window.lastPredictData = null;
 let selectedGame = ''; 
 let sessionToken = null; 
 let currentKey = null;
+let historyLog = []; // Lưu trữ mảng lịch sử đánh
 
 function generateSignature(hwid, timestamp) { 
     return CryptoJS.HmacSHA256(hwid + timestamp, HWID_SECRET).toString(); 
@@ -574,16 +575,31 @@ function toggleOrientation() { panel.classList.toggle('horizontal'); const btn =
 function getMlsClass(kq) { return (kq === "Tài" || kq === "T") ? "color-tai" : (kq === "Xỉu" || kq === "X") ? "color-xiu" : "color-off"; }
 
 document.querySelectorAll('.logic-toggle').forEach(el => el.addEventListener('change', () => { if(window.lastPredictData) renderUI(window.lastPredictData); }));
-document.getElementById('api-source-select').addEventListener('change', () => { window.lastDataString = ""; document.getElementById("status-text").innerHTML = "ĐANG ĐỔI LUỒNG API..."; setTimeout(fetchApiAndPredict, 500); });
+document.getElementById('api-source-select').addEventListener('change', () => { window.lastDataString = ""; setTimeout(fetchApiAndPredict, 500); });
 document.getElementById('btn-advanced-toggle').addEventListener('click', () => { const sec = document.getElementById('advanced-section'); const isHidden = sec.style.display === 'none'; sec.style.display = isHidden ? 'block' : 'none'; document.getElementById('btn-advanced-toggle').innerHTML = isHidden ? '🛠️ ĐÓNG THIẾT LẬP NÂNG CAO' : '🛠️ MỞ THIẾT LẬP NÂNG CAO'; });
+document.getElementById('btn-stats-toggle').addEventListener('click', () => { const sec = document.getElementById('stats-section'); const isHidden = sec.style.display === 'none'; sec.style.display = isHidden ? 'block' : 'none'; document.getElementById('btn-stats-toggle').innerHTML = isHidden ? '📊 ĐÓNG THỐNG KÊ LỊCH SỬ' : '📊 XEM THỐNG KÊ LỊCH SỬ'; });
+
+function renderHistory() {
+    const tbody = document.getElementById("history-tbody");
+    if(!tbody) return;
+    let html = "";
+    let reversed = [...historyLog].reverse();
+    reversed.forEach((item) => {
+        let stColor = item.status === "WIN" ? "color:#34d399;" : (item.status === "LOSE" ? "color:#f87171;" : "color:#cbd5e1;");
+        let pdColor = item.predict === "Tài" ? "color:#f87171;" : (item.predict === "Xỉu" ? "color:#60a5fa;" : "color:#9ca3af;");
+        let acColor = item.actual === "Tài" ? "color:#f87171;" : (item.actual === "Xỉu" ? "color:#60a5fa;" : "color:#9ca3af;");
+        
+        html += `<tr>
+            <td>${item.time}</td>
+            <td style="${pdColor} font-weight:bold;">${item.predict} ${item.percent > 0 ? `<br><small style="color:#aaa;">(${item.percent}%)</small>` : ''}</td>
+            <td style="${acColor}">${item.actual}</td>
+            <td style="${stColor} font-weight:bold;">${item.status}</td>
+        </tr>`;
+    });
+    tbody.innerHTML = html;
+}
 
 async function fetchApiAndPredict() {
-    const statusText = document.getElementById("status-text"); 
-    const spinner = document.getElementById("status-spinner");
-    
-    statusText.innerHTML = "ĐANG QUÉT DỮ LIỆU..."; 
-    spinner.style.display = "block";
-    
     const source = document.getElementById("api-source-select").value || 'normal';
     const seqLength = parseInt(document.getElementById("seq-length-select").value, 10) || 13;
     const invertChain = document.getElementById('invert-chain-checkbox').checked;
@@ -599,11 +615,37 @@ async function fetchApiAndPredict() {
         
         if (data && data.success) {
             let currentDataString = data.chuoiN.join("") + "-" + (data.lastDice ? data.lastDice.join("") : "");
-            if (window.lastDataString === currentDataString) { 
-                // Không đổi chuỗi -> Không báo noti để đỡ spam, chỉ update UI ẩn
-            } else { 
-                if (window.lastDataString !== "") { showToast("PHÁT HIỆN TÍN HIỆU! ĐANG ÉP DATA...", "success"); playBeep('normal'); }
+            
+            if (window.lastDataString === "") {
+                window.lastDataString = currentDataString;
+                let predictLogic = (data.logic_chuoi && data.logic_chuoi.ket_qua) ? data.logic_chuoi.ket_qua : "Không rõ";
+                let pt = data.logic_chuoi ? Math.max(data.logic_chuoi.ty_le_tai || 0, data.logic_chuoi.ty_le_xiu || 0) : 0;
+                historyLog.push({ time: new Date().toLocaleTimeString('vi-VN', {hour12:false}), predict: predictLogic, percent: pt, actual: "...", status: "..." });
+                renderHistory();
+            } else if (window.lastDataString !== currentDataString) { 
+                showToast("PHÁT HIỆN TÍN HIỆU! ĐANG ÉP DATA...", "success"); 
+                playBeep('normal'); 
+
+                let actualChar = data.chuoiN[data.chuoiN.length - 1]; 
+                let actualStr = actualChar === "T" ? "Tài" : (actualChar === "X" ? "Xỉu" : "Hòa");
+                
+                if (historyLog.length > 0) {
+                    let lastP = historyLog[historyLog.length - 1];
+                    if (lastP.status === "...") {
+                        lastP.actual = actualStr;
+                        if (lastP.predict === "Không rõ" || lastP.predict === "ĐÃ TẮT") {
+                            lastP.status = "SKIP";
+                        } else {
+                            lastP.status = (lastP.predict === actualStr) ? "WIN" : "LOSE";
+                        }
+                    }
+                }
+
                 window.lastDataString = currentDataString; 
+                let predictLogic = (data.logic_chuoi && data.logic_chuoi.ket_qua) ? data.logic_chuoi.ket_qua : "Không rõ";
+                let pt = data.logic_chuoi ? Math.max(data.logic_chuoi.ty_le_tai || 0, data.logic_chuoi.ty_le_xiu || 0) : 0;
+                historyLog.push({ time: new Date().toLocaleTimeString('vi-VN', {hour12:false}), predict: predictLogic, percent: pt, actual: "...", status: "..." });
+                renderHistory();
             }
             window.lastPredictData = data;
             renderUI(data);
@@ -611,13 +653,10 @@ async function fetchApiAndPredict() {
             showToast(`API ERROR: ${data.message || 'Hệ thống gián đoạn.'}`, 'error');
             if (data.kicked) setTimeout(() => { location.reload(); }, 2500); 
         }
-    } catch (e) { showToast("LỖI: MẤT KẾT NỐI SERVER GIẢI MÃ.", "error"); }
-    
-    statusText.innerHTML = "QUÉT TỰ ĐỘNG (10S/LẦN) 🟢"; 
-    spinner.style.display = "none";
+    } catch (e) { /* Lỗi ngầm thì kệ nó vòng lặp quét tiếp */ }
 }
 
-// Hàm Vẽ Giao Diện Mới
+// Hàm Vẽ Giao Diện
 function renderUI(data) {
     const resultBox = document.getElementById("result-box");
     const useChuoi = document.getElementById('toggle-chuoi').checked;
