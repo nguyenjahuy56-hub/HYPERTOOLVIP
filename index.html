@@ -134,7 +134,7 @@
         }
         
         #tool-panel { 
-            position: absolute; top: 15px; right: 15px; width: 380px; min-width: 280px; min-height: 150px; 
+            position: absolute; top: 15px; right: 15px; width: 400px; min-width: 280px; min-height: 150px; 
             background: var(--bg-glass); color: #fff; border-radius: 16px; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.9), inset 0 0 15px rgba(0,243,255,0.1); 
             border: 1px solid var(--border-glass); z-index: 9999; backdrop-filter: blur(20px); 
@@ -142,7 +142,7 @@
             font-family: 'Rajdhani', sans-serif; 
         }
 
-        #tool-panel.horizontal { width: 620px; }
+        #tool-panel.horizontal { width: 640px; }
         #tool-panel.horizontal .pred-grid { grid-template-columns: 1fr 1fr 1fr; }
         #tool-panel.horizontal .pred-final { grid-column: span 1; }
 
@@ -375,13 +375,14 @@
                             <thead>
                                 <tr>
                                     <th>Thời gian</th>
-                                    <th>Dự đoán</th>
+                                    <th>Logic</th>
+                                    <th>Tổng Hợp</th>
                                     <th>Thực tế</th>
                                     <th>Kết quả</th>
                                 </tr>
                             </thead>
                             <tbody id="history-tbody">
-                                <tr><td colspan="4" style="color:#6b7280; font-style:italic;">Chưa có dữ liệu...</td></tr>
+                                <tr><td colspan="5" style="color:#6b7280; font-style:italic;">Chưa có dữ liệu...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -586,12 +587,14 @@ function renderHistory() {
     let reversed = [...historyLog].reverse();
     reversed.forEach((item) => {
         let stColor = item.status === "WIN" ? "color:#34d399;" : (item.status === "LOSE" ? "color:#f87171;" : "color:#cbd5e1;");
-        let pdColor = item.predict === "Tài" ? "color:#f87171;" : (item.predict === "Xỉu" ? "color:#60a5fa;" : "color:#9ca3af;");
+        let pLColor = item.predictLogic === "Tài" ? "color:#f87171;" : (item.predictLogic === "Xỉu" ? "color:#60a5fa;" : "color:#9ca3af;");
+        let pTColor = item.predictTotal === "Tài" ? "color:#f87171;" : (item.predictTotal === "Xỉu" ? "color:#60a5fa;" : "color:#9ca3af;");
         let acColor = item.actual === "Tài" ? "color:#f87171;" : (item.actual === "Xỉu" ? "color:#60a5fa;" : "color:#9ca3af;");
         
         html += `<tr>
             <td>${item.time}</td>
-            <td style="${pdColor} font-weight:bold;">${item.predict} ${item.percent > 0 ? `<br><small style="color:#aaa;">(${item.percent}%)</small>` : ''}</td>
+            <td style="${pLColor} font-weight:bold;">${item.predictLogic} ${item.percent > 0 ? `<br><small style="color:#aaa;">(${item.percent}%)</small>` : ''}</td>
+            <td style="${pTColor} font-weight:bold;">${item.predictTotal}</td>
             <td style="${acColor}">${item.actual}</td>
             <td style="${stColor} font-weight:bold;">${item.status}</td>
         </tr>`;
@@ -619,8 +622,9 @@ async function fetchApiAndPredict() {
             if (window.lastDataString === "") {
                 window.lastDataString = currentDataString;
                 let predictLogic = (data.logic_chuoi && data.logic_chuoi.ket_qua) ? data.logic_chuoi.ket_qua : "Không rõ";
+                let predictTotal = data.ket_qua_du_doan || "Không rõ";
                 let pt = data.logic_chuoi ? Math.max(data.logic_chuoi.ty_le_tai || 0, data.logic_chuoi.ty_le_xiu || 0) : 0;
-                historyLog.push({ time: new Date().toLocaleTimeString('vi-VN', {hour12:false}), predict: predictLogic, percent: pt, actual: "...", status: "..." });
+                historyLog.push({ time: new Date().toLocaleTimeString('vi-VN', {hour12:false}), predictLogic: predictLogic, predictTotal: predictTotal, percent: pt, actual: "...", status: "..." });
                 renderHistory();
             } else if (window.lastDataString !== currentDataString) { 
                 showToast("PHÁT HIỆN TÍN HIỆU! ĐANG ÉP DATA...", "success"); 
@@ -633,18 +637,27 @@ async function fetchApiAndPredict() {
                     let lastP = historyLog[historyLog.length - 1];
                     if (lastP.status === "...") {
                         lastP.actual = actualStr;
-                        if (lastP.predict === "Không rõ" || lastP.predict === "ĐÃ TẮT") {
+                        
+                        let activePredict = "Không rõ";
+                        if (lastP.predictTotal === "Tài" || lastP.predictTotal === "Xỉu") {
+                            activePredict = lastP.predictTotal;
+                        } else if (lastP.predictLogic === "Tài" || lastP.predictLogic === "Xỉu") {
+                            activePredict = lastP.predictLogic;
+                        }
+
+                        if (activePredict === "Không rõ" || activePredict === "ĐÃ TẮT") {
                             lastP.status = "SKIP";
                         } else {
-                            lastP.status = (lastP.predict === actualStr) ? "WIN" : "LOSE";
+                            lastP.status = (activePredict === actualStr) ? "WIN" : "LOSE";
                         }
                     }
                 }
 
                 window.lastDataString = currentDataString; 
                 let predictLogic = (data.logic_chuoi && data.logic_chuoi.ket_qua) ? data.logic_chuoi.ket_qua : "Không rõ";
+                let predictTotal = data.ket_qua_du_doan || "Không rõ";
                 let pt = data.logic_chuoi ? Math.max(data.logic_chuoi.ty_le_tai || 0, data.logic_chuoi.ty_le_xiu || 0) : 0;
-                historyLog.push({ time: new Date().toLocaleTimeString('vi-VN', {hour12:false}), predict: predictLogic, percent: pt, actual: "...", status: "..." });
+                historyLog.push({ time: new Date().toLocaleTimeString('vi-VN', {hour12:false}), predictLogic: predictLogic, predictTotal: predictTotal, percent: pt, actual: "...", status: "..." });
                 renderHistory();
             }
             window.lastPredictData = data;
