@@ -1,743 +1,236 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Tool Auto Dự Đoán VIP - By Duong Dung</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V-MAX APEX: PURE LOGIC (WR 61.28%)</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap');
-
-        :root { 
-            --panel-scale: 1; 
-            --neon-blue: #00f3ff;
-            --neon-purple: #bc13fe;
-            --neon-red: #ff2a2a;
-            --gold: #ffaa00;
-            --bg-dark: #070a10;
-            --bg-glass: rgba(10, 14, 23, 0.9);
-            --border-glass: rgba(0, 243, 255, 0.3);
-        }
-        
-        * { box-sizing: border-box; }
-        
-        html, body { 
-            margin: 0; padding: 0; height: 100%;
-            background: var(--bg-dark);
-            font-family: 'Rajdhani', sans-serif;
-            color: #fff; overflow: hidden; 
-        }
-        
-        .overlay { 
-            position: fixed; inset: 0; display: flex; 
-            align-items: center; justify-content: center; 
-            background: radial-gradient(circle at center, #111827 0%, #020617 100%); 
-            z-index: 20000; 
+        :root {
+            --bg-main: #020617;
+            --bg-panel: #0f172a;
+            --primary: #3b82f6; /* Xanh Lam - Tượng trưng cho Logic sạch */
+            --tai: #ef4444;     
+            --xiu: #0ea5e9;     
+            --text: #f8fafc;
+            --border: #1e293b;
+            --accent: #2dd4bf; 
         }
 
-        .panel-card { 
-            width: 440px; max-width: 94vw; border-radius: 16px; padding: 30px; 
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 243, 255, 0.05); 
-            background: var(--bg-glass); border: 1px solid var(--border-glass); 
-            backdrop-filter: blur(15px); position: relative; overflow: hidden; 
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
         }
 
-        .panel-card::before { 
-            content: ""; position: absolute; top: -50%; left: -50%; 
-            width: 200%; height: 200%; 
-            background: conic-gradient(transparent, rgba(0, 243, 255, 0.1), transparent 30%); 
-            animation: rotate 4s linear infinite; pointer-events: none; z-index: -1; 
+        .container {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 12px;
+            padding: 25px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
         }
 
-        @keyframes rotate { 100% { transform: rotate(1turn); } }
-        
-        .panel-card h2 { 
-            margin: 0 0 10px 0; font-size: 22px; text-align: center; text-transform: uppercase; 
-            font-family: 'Orbitron', sans-serif; letter-spacing: 1px; color: var(--neon-blue); 
-            text-shadow: 0 0 10px rgba(0,243,255,0.5); display: flex; align-items: center; justify-content: center; 
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 1.8rem; color: var(--primary); letter-spacing: 1px; }
+        .header p { color: #94a3b8; font-size: 0.8rem; margin-top: 5px; text-transform: uppercase; font-weight: bold; }
+
+        .row-group { display: flex; gap: 10px; margin-bottom: 12px; }
+        .input-box {
+            flex: 1;
+            background: #000;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            text-align: center;
         }
 
-        .sub { font-size: 15px; color: #9ca3af; text-align: center; margin-bottom: 10px; font-weight: 500; }
-        
-        .game-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 25px; }
+        .input-box.highlight { border-color: var(--accent); background: rgba(45, 212, 191, 0.05); }
 
-        .btn-game { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            padding: 25px 10px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); 
-            color: #fff; font-weight: 700; font-family: 'Orbitron', sans-serif; font-size: 13px; 
-            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4); text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
+        label { display: block; font-size: 0.7rem; color: #94a3b8; margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
+        input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            text-align: center;
+            outline: none;
+            font-weight: bold;
         }
 
-        .btn-game::after { 
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; 
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; 
+        .btn-update {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
         }
 
-        .btn-game img { 
-            width: 52px; height: 52px; margin-bottom: 12px; border-radius: 14px; 
-            border: 2px solid rgba(255,255,255,0.9); box-shadow: 0 5px 15px rgba(0,0,0,0.6); 
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); object-fit: cover; 
+        .btn-update:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3); }
+
+        .result-panel {
+            margin-top: 20px;
+            background: #000;
+            border: 1px dashed var(--primary);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
         }
 
-        .btn-game:hover { transform: translateY(-5px); border-color: var(--neon-blue); box-shadow: 0 12px 25px rgba(0, 243, 255, 0.3); }
-        .btn-game:hover img { transform: scale(1.15) translateY(-2px); border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 243, 255, 0.8); }
-        .btn-game:hover::after { left: 200%; transition: 0.7s; }
+        #verdict { font-size: 3.5rem; font-weight: 900; margin: 5px 0; }
+        .is-tai { color: var(--tai); }
+        .is-xiu { color: var(--xiu); }
+        .is-wait { color: #334155; }
 
-        .bg-lc79 { background: linear-gradient(135deg, #064e3b, #10b981); }
-        .bg-xd88 { background: linear-gradient(135deg, #78350f, #f59e0b); }
-        .bg-betvip { background: linear-gradient(135deg, #881337, #e11d48); }
-        .bg-sunwin { background: linear-gradient(135deg, #7c2d12, #ea580c); }
-
-        .price-grid { display: flex; gap: 6px; justify-content: space-between; margin: 20px 0; }
-        .price-item { 
-            flex: 1; background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.5)); 
-            padding: 12px 4px; border-radius: 10px; text-align: center; border: 1px solid rgba(255,170,0,0.3); 
-            box-shadow: inset 0 0 10px rgba(255,170,0,0.05); transition: transform 0.2s; 
+        .log-box {
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            text-align: left;
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+            line-height: 1.5;
         }
-        .price-item:hover { transform: translateY(-3px); border-color: var(--gold); box-shadow: 0 5px 15px rgba(255,170,0,0.2); }
-        .price-item div:first-child { font-size: 16px; color: var(--gold); font-family: 'Orbitron', sans-serif; font-weight: bold; text-shadow: 0 0 5px rgba(255,170,0,0.5); }
-        .price-item div:last-child { font-size: 12px; color: #cbd5e1; margin-top: 4px; text-transform: uppercase; }
-        
-        .input-row { display: flex; gap: 10px; margin-top: 10px; }
-        input[type="text"] { 
-            flex: 1; padding: 14px; border-radius: 10px; border: 1px solid rgba(0,243,255,0.4); 
-            background: rgba(0,0,0,0.6); color: #fff; outline: none; font-family: 'Orbitron', sans-serif; 
-            letter-spacing: 2px; font-size: 14px; transition: all 0.3s; 
-        }
-        input[type="text"]:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0,243,255,0.3); }
-        
-        .btn { 
-            padding: 14px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: 700; 
-            font-size: 15px; color: #fff; transition: all 0.3s; display: flex; align-items: center; justify-content: center; 
-            text-transform: uppercase; font-family: 'Orbitron', sans-serif; 
-        }
-        .btn-check { background: linear-gradient(90deg, #0055ff, #00aaff); box-shadow: 0 4px 15px rgba(0, 170, 255, 0.4); }
-        .btn-check:hover { background: linear-gradient(90deg, #00aaff, #00f3ff); box-shadow: 0 6px 20px rgba(0, 243, 255, 0.6); transform: scale(1.02); }
-        .btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #9ca3af; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 600; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-ghost:hover { background: rgba(255,255,255,0.05); color: #fff; border-color: rgba(255,255,255,0.3); }
-        
-        .msg { text-align: center; margin-top: 15px; min-height: 20px; font-size: 15px; font-weight: bold; }
-        .msg.success { color: #34d399; }
-        .msg.error { color: #f87171; }
-        
-        .small { font-size: 13px; color: #6b7280; text-align: center; margin-top: 10px; margin-bottom: 15px; }
-
-        #game-frame { width: 100%; height: 100vh; border: none; display: block; filter: none; }
-
-        #toggle-tool { 
-            position: fixed; top: 15px; right: 15px; z-index: 10000; padding: 12px 18px; 
-            background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue)); color: white; border: none; 
-            border-radius: 10px; cursor: pointer; font-weight: bold; display: none; font-family: 'Orbitron', sans-serif; 
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5); 
-        }
-        
-        #tool-panel { 
-            position: absolute; top: 15px; right: 15px; width: 400px; min-width: 280px; min-height: 150px; 
-            background: var(--bg-glass); color: #fff; border-radius: 16px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.9), inset 0 0 15px rgba(0,243,255,0.1); 
-            border: 1px solid var(--border-glass); z-index: 9999; backdrop-filter: blur(20px); 
-            resize: both; transform-origin: top right; transform: scale(var(--panel-scale)); display: none; 
-            font-family: 'Rajdhani', sans-serif; 
-        }
-
-        #tool-panel.horizontal { width: 640px; }
-        #tool-panel.horizontal .pred-grid { grid-template-columns: 1fr 1fr 1fr; }
-        #tool-panel.horizontal .pred-final { grid-column: span 1; }
-
-        #tool-panel.compact-mode { width: 280px !important; min-width: 240px; }
-        #tool-panel.compact-mode #panel-settings, #tool-panel.compact-mode .hide-on-compact { display: none !important; }
-        #tool-panel.compact-mode .pred-grid { display: flex; flex-direction: column; gap: 8px; }
-        #tool-panel.compact-mode .pred-box { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-radius: 8px; text-align: right; }
-        #tool-panel.compact-mode .pred-title { font-size: 12px; text-align: left; margin: 0; }
-        #tool-panel.compact-mode .pred-sub { display: none; }
-        
-        .panel-header { 
-            background: linear-gradient(90deg, #0f172a, rgba(0,243,255,0.1)); padding: 14px 16px; 
-            display: flex; justify-content: space-between; align-items: center; gap: 8px; 
-            border-bottom: 2px solid var(--neon-blue); cursor: grab; 
-        }
-
-        .header-left { display: flex; gap: 8px; align-items: center; }
-        .header-title { font-weight: 900; text-transform: uppercase; font-family: 'Orbitron', sans-serif; color: #fff; font-size: 15px; text-shadow: 0 0 8px rgba(0,243,255,0.6); }
-        .expire-badge { font-size: 12px; background: rgba(0,0,0,0.5); padding: 6px 10px; border-radius: 6px; color: var(--neon-blue); border: 1px solid rgba(0,243,255,0.3); font-weight: 600; font-family: 'Orbitron', sans-serif; }
-        
-        .controls button { background: transparent; border: none; color: #9ca3af; cursor: pointer; font-size: 16px; padding: 4px; transition: color 0.2s; }
-        .controls button:hover { color: #fff; text-shadow: 0 0 5px #fff; }
-        
-        .panel-body { padding: 16px; overflow: auto; max-height: calc(100vh - 100px); display: flex; flex-direction: column; gap: 14px; }
-
-        .select-row { display: flex; gap: 10px; align-items: center; font-size: 14px; font-weight: 600; color: #cbd5e1; }
-        select { background: rgba(0,0,0,0.5); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 6px; outline: none; font-family: 'Rajdhani', sans-serif; }
-
-        .seq-text { letter-spacing: 4px; font-family: 'Orbitron', monospace; color: var(--gold); font-weight: 700; font-size: 15px; }
-
-        .info-row { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 10px; font-size: 15px; border: 1px solid rgba(255,255,255,0.05); }
-        
-        .pred-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-        .pred-box { 
-            background: rgba(0,0,0,0.5); padding: 14px 8px; border-radius: 10px; text-align: center; 
-            border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 0 15px rgba(0,0,0,0.4); transition: all 0.3s; 
-        }
-
-        .pred-title { font-size: 13px; color: #9ca3af; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 8px; }
-        .pred-value { font-size: 24px; font-family: 'Orbitron', sans-serif; font-weight: 900; }
-        .pred-sub { font-size: 12px; color: #aaa; margin-top: 6px; }
-        
-        .pred-final { 
-            grid-column: span 2; background: linear-gradient(135deg, rgba(30,27,75,0.8), rgba(15,23,42,0.9)); 
-            border: 1px solid var(--neon-blue); padding: 18px; position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(0,243,255,0.2);
-        }
-        .pred-final::after { 
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; 
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); animation: shine 3s infinite; 
-        }
-        
-        .color-tai { color: #f87171; text-shadow: 0 0 12px rgba(248,113,113,0.8); }
-        .color-xiu { color: #60a5fa; text-shadow: 0 0 12px rgba(96,165,250,0.8); }
-        .color-off { color: #555; font-size: 16px !important; }
-
-        .control-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
-        .tiny { font-size: 13px; color: #9ca3af; font-weight: 500; }
-        .tiny label { cursor: pointer; display: flex; align-items: center; gap: 4px; }
-
-        .toggle-btn { 
-            padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(0,243,255,0.4); background: rgba(0,0,0,0.4); 
-            color: var(--neon-blue); cursor: pointer; font-family: 'Rajdhani', sans-serif; font-weight: bold; transition: all 0.2s; 
-        }
-        .toggle-btn:hover { background: rgba(0,243,255,0.1); box-shadow: 0 0 10px rgba(0,243,255,0.3); }
-
-        /* BẢNG THỐNG KÊ CSS */
-        .stats-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
-        .stats-table th { background: rgba(0,243,255,0.1); color: var(--neon-blue); padding: 8px; border-bottom: 1px solid rgba(0,243,255,0.3); font-family: 'Orbitron', sans-serif; }
-        .stats-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .stats-wrapper { max-height: 200px; overflow-y: auto; }
-
-        #toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100000; pointer-events: none; }
-        .toast { 
-            background: var(--bg-glass); color: #fff; padding: 14px 24px; border-radius: 10px; 
-            border-left: 4px solid var(--neon-blue); box-shadow: 0 8px 25px rgba(0,0,0,0.8); 
-            font-size: 15px; font-weight: 600; font-family: 'Rajdhani', sans-serif; backdrop-filter: blur(10px); 
-            animation: toast-in 0.4s forwards, toast-out 0.4s forwards 3s; 
-        }
-        @keyframes toast-in { from { opacity: 0; transform: translateX(100%) scale(0.9); } to { opacity: 1; transform: translateX(0) scale(1); } }
-        @keyframes toast-out { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(100%); } }
-
-        @media (max-width:720px) {
-            #toggle-tool { right: 12px; top: 12px; }
-            #tool-panel { left: 8px; right: 8px; width: auto; min-width: auto; transform-origin: top center; }
-            .panel-body { padding: 12px; max-height: 75vh; }
-            .game-grid { gap: 10px; }
-            .btn-game { padding: 15px 5px; font-size: 12px; }
-            .btn-game img { width: 40px; height: 40px; }
-        }
+        .hl { color: var(--accent); font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="toast-container"></div>
+    <div class="container">
+        <div class="header">
+            <h1>V-MAX PURE APEX</h1>
+            <p>Toán Học Sạch - Winrate 61.28%</p>
+        </div>
 
-    <div id="gameSelectOverlay" class="overlay" role="dialog">
-        <div class="panel-card" role="document">
-            <h2>HỆ THỐNG DỰ ĐOÁN VIP</h2>
-            <div class="sub">Chọn cổng game mà bạn muốn dự đoán</div>
-            <div class="game-grid">
-                <button id="btn-select-lc79" class="btn-game bg-lc79">
-                    <img src="https://i.postimg.cc/NGKy82K4/lc79.webp">
-                    <span>MỞ TOOL LC79</span>
-                </button>
-                <button id="btn-select-xd88" class="btn-game bg-xd88">
-                    <img src="https://i.postimg.cc/wMCkTgVs/xocdia88.png">
-                    <span>MỞ TOOL XOCDIA88</span>
-                </button>
-                <button id="btn-select-betvip" class="btn-game bg-betvip">
-                    <img src="https://i.postimg.cc/Nj4NDCNW/betvip.webp">
-                    <span>MỞ TOOL BETVIP</span>
-                </button>
-                <button id="btn-select-sunwin" class="btn-game bg-sunwin">
-                    <img src="https://i.postimg.cc/y6wrZ8xx/IMG-7874.jpg">
-                    <span>MỞ TOOL SUNWIN</span>
-                </button>
+        <div class="input-box highlight" style="margin-bottom: 20px;">
+            <label style="color: var(--accent);">Vừa nổ thực tế (Xúc xắc)</label>
+            <input type="number" id="new_dice" placeholder="VD: 345" onkeypress="handleKeyPress(event)">
+        </div>
+
+        <div class="row-group">
+            <div class="input-box">
+                <label>Mã Chờ (M1)</label>
+                <input type="number" id="m1" placeholder="Mới">
             </div>
+            <div class="input-box">
+                <label>Mã Nổ (M2)</label>
+                <input type="number" id="m2" placeholder="Cũ">
+            </div>
+        </div>
+
+        <div class="row-group">
+            <div class="input-box">
+                <label>S1 (Vừa nổ)</label>
+                <input type="number" id="d1" placeholder="---">
+            </div>
+            <div class="input-box">
+                <label>S2 (Trước)</label>
+                <input type="number" id="d2" placeholder="---">
+            </div>
+            <div class="input-box">
+                <label>S3 (Sâu)</label>
+                <input type="number" id="d3" placeholder="---">
+            </div>
+        </div>
+
+        <button class="btn-update" onclick="shiftData()">Dự Đoán Logic</button>
+
+        <div class="result-panel">
+            <div id="verdict" class="is-wait">WAIT</div>
+            <div id="logBox" class="log-box">// Pure Engine Ready...</div>
         </div>
     </div>
 
-    <div id="entryOverlay" class="overlay" role="dialog" style="display:none;">
-        <div class="panel-card" role="document">
-            <h2 id="entryTitle">XÁC THỰC KEY VIP <span id="gameNameDisplay" style="color:var(--neon-blue); margin-left: 8px;"></span></h2>
-            <div class="sub">Nhập mã Key truy cập máy chủ <span id="gameNameSub" style="font-weight:bold; color:#fff;"></span></div>
-            
-            <div class="price-grid">
-                <div class="price-item">
-                    <div>19K</div>
-                    <div>1 Ngày</div>
-                </div>
-                <div class="price-item">
-                    <div>49K</div>
-                    <div>7 Ngày</div>
-                </div>
-                <div class="price-item">
-                    <div>99K</div>
-                    <div>30 Ngày</div>
-                </div>
-                <div class="price-item" style="border-color: var(--neon-purple); box-shadow: inset 0 0 15px rgba(188,19,254,0.1);">
-                    <div style="color: var(--neon-purple);">199K</div>
-                    <div>Vĩnh viễn</div>
-                </div>
-            </div>
-
-            <div style="margin-top:6px">
-                <div class="input-row">
-                    <input id="keyInput" type="text" placeholder="Nhập Key KEY-XXXX..." autocomplete="off" />
-                    <button id="checkBtn" class="btn btn-check">KIỂM TRA</button>
-                </div>
-                <div id="entryMsg" class="msg"></div>
-                <div class="small" style="margin-bottom: 15px;">⚠️ HWID SECURE: Key sẽ khóa theo thiết bị hiện tại.</div>
-                <button id="backToGameSelectBtn" class="btn-ghost" style="width:100%;">⬅ CHỌN LẠI SERVER</button>
-            </div>
-        </div>
-    </div>
-
-    <iframe id="game-frame" src="about:blank" style="width:100%;height:100vh;border:0;display:none;"></iframe>
-    
-    <button id="toggle-tool" onclick="togglePanel()">⚙ MỞ MENU TOOL</button>
-
-    <div id="tool-panel" aria-hidden="true">
-        <div class="panel-header" id="panel-header">
-            <div class="header-left">
-                <div class="header-title" id="tool-title">⚡ VIP PREDICTOR</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px">
-                <div id="expireBadge" class="expire-badge">Key: --</div>
-                
-                <div class="controls">
-                    <button class="icon" title="Thu gọn bảng" onclick="toggleCompactMode()">⏬</button>
-                    <button class="icon" title="Thu nhỏ size" onclick="changeScale(-0.1)">−</button>
-                    <button class="icon" title="Phóng to size" onclick="changeScale(0.1)">+</button>
-                    <button class="icon" title="Reset size" onclick="resetScale()">R</button>
-                    <button class="icon" id="orientBtn" title="Chuyển chế độ ngang" onclick="toggleOrientation()">↔</button>
-                    <button class="close-btn" title="Ẩn Tool" onclick="togglePanel()">×</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel-body" id="panel-body">
-            
-            <div id="panel-settings" style="display:flex; flex-direction:column; gap:12px;">
-                
-                <div style="display:flex; gap:10px;">
-                    <div class="select-row" style="flex:1;">
-                        <label>Chuỗi:</label>
-                        <select id="seq-length-select" style="flex:1">
-                            <option value="11">11 Tay</option>
-                            <option value="12">12 Tay</option>
-                            <option value="13" selected>13 Tay</option>
-                            <option value="14">14 Tay</option>
-                            <option value="15">15 Tay</option>
-                        </select>
-                    </div>
-                    <div class="select-row" style="flex:1;">
-                        <label>Luồng API:</label>
-                        <select id="api-source-select" style="flex:1">
-                            <option value="normal">Thường</option>
-                            <option value="md5">MD5</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button id="btn-advanced-toggle" class="toggle-btn" style="width:100%;">🛠️ THIẾT LẬP NÂNG CAO</button>
-
-                <div id="advanced-section" style="display:none; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                    <div class="control-row tiny" style="margin-bottom: 8px;">
-                        <label><input type="checkbox" id="toggle-chuoi" class="logic-toggle" checked /> Hiện Phân Tích Chuỗi</label>
-                        <label><input type="checkbox" id="toggle-dice" class="logic-toggle" checked /> Hiện Phân Tích Xúc Xắc</label>
-                    </div>
-                    
-                    <div class="control-row tiny" style="margin-bottom: 8px; border-top: 1px dashed #444; padding-top: 8px;">
-                        <span style="color:var(--gold)">Trọng số thuật toán:</span>
-                        <label>Base: <input type="number" id="weight-base" value="1.38" step="0.01" style="width:55px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--neon-blue); border-radius:4px; text-align:center; padding: 2px;" class="logic-toggle"></label>
-                    </div>
-
-                    <div class="control-row tiny" style="border-top: 1px dashed #444; padding-top: 8px;">
-                        <label><input type="checkbox" id="hide-percent" class="logic-toggle" /> Ẩn tỷ lệ % (Giao diện gọn)</label>
-                        <label><input type="checkbox" id="invert-chain-checkbox" /> Đảo Chuỗi Gốc</label>
-                        <label><input type="checkbox" id="sound-alert-checkbox" checked /> Âm thanh</label>
-                    </div>
-                </div>
-
-                <button id="btn-stats-toggle" class="toggle-btn" style="width:100%; border-color: var(--gold); color: var(--gold);">📊 XEM THỐNG KÊ LỊCH SỬ</button>
-                
-                <div id="stats-section" style="display:none; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                    <div class="stats-wrapper">
-                        <table class="stats-table">
-                            <thead>
-                                <tr>
-                                    <th>Thời gian</th>
-                                    <th>Logic</th>
-                                    <th>Tổng Hợp</th>
-                                    <th>Thực tế</th>
-                                    <th>Kết quả</th>
-                                </tr>
-                            </thead>
-                            <tbody id="history-tbody">
-                                <tr><td colspan="5" style="color:#6b7280; font-style:italic;">Chưa có dữ liệu...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="select-row hide-on-compact" style="align-items:flex-start; gap:10px;">
-                    <label style="align-self:flex-start; margin-top: 8px;">Ghi chú:</label>
-                    <textarea id="annotation-input" rows="1" style="flex:1; padding:8px; border-radius:8px; background:rgba(0,0,0,0.6); border:1px solid rgba(0,243,255,0.2); color:#fff; resize:vertical; font-family: 'Rajdhani', sans-serif;" placeholder="Ghi nhớ nhịp cầu..."></textarea>
-                </div>
-
-            </div>
-            
-            <div id="result-box">
-                <div style="text-align:center;color:#6b7280;padding:30px 0; font-family: 'Orbitron', sans-serif;">
-                    <i>ĐANG CHỜ TÍN HIỆU DATA...</i>
-                </div>
-            </div>
-            
-        </div>
-    </div>
-
-<script>
-// ================= BẢO MẬT & CHỐNG F12 =================
-document.addEventListener('contextmenu', event => event.preventDefault()); 
-
-document.addEventListener('keydown', function(e) {
-    if(e.keyCode === 123) { e.preventDefault(); return false; } 
-    if(e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; } 
-    if(e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; } 
-});
-
-setInterval(function() { (function() { return false; }['constructor']('debugger')()); }, 50);
-
-const KEY_SERVER_URL = "https://vip-key-server.onrender.com"; // Thay Link render backend
-const HWID_SECRET = "MY_SUPER_SECRET_HWID_KEY_2026"; 
-
-window.lastDataString = ""; 
-window.lastPredictData = null; 
-let selectedGame = ''; 
-let sessionToken = null; 
-let currentKey = null;
-let historyLog = []; // Lưu trữ mảng lịch sử đánh
-
-function generateSignature(hwid, timestamp) { 
-    return CryptoJS.HmacSHA256(hwid + timestamp, HWID_SECRET).toString(); 
-}
-
-function showToast(msg, type = 'info') {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`; 
-    toast.innerHTML = msg;
-    container.appendChild(toast); 
-    setTimeout(() => toast.remove(), 3500);
-}
-
-let audioCtx = null;
-function playBeep(type) {
-    const soundEnabled = document.getElementById('sound-alert-checkbox').checked;
-    if (!soundEnabled) return; 
-
-    try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator(); 
-        const gainNode = audioCtx.createGain();
-        osc.connect(gainNode); gainNode.connect(audioCtx.destination);
-        if (type === 'warn') { 
-            osc.type = 'square'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); 
-            osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.3); 
-            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); 
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3); 
-            osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
-        } else { 
-            osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime); 
-            osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1); 
-            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); 
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2); 
-            osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.2); 
+    <script>
+        function handleKeyPress(e) {
+            if (e.key === "Enter") shiftData();
         }
-    } catch(e) {}
-}
 
-async function getHWID() {
-    let id = localStorage.getItem("device_hw"); 
-    if(id) return id;
-    const canvas = document.createElement('canvas'); 
-    const ctx = canvas.getContext('2d');
-    ctx.textBaseline = "top"; ctx.font = "14px 'Arial'"; ctx.textBaseline = "alphabetic";
-    ctx.fillStyle = "#f60"; ctx.fillRect(125,1,62,20);
-    ctx.fillStyle = "#069"; ctx.fillText("vip-tool", 2, 15);
-    
-    const dataURL = canvas.toDataURL(); 
-    const str = navigator.userAgent + screen.width + "x" + screen.height + navigator.language + dataURL;
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash = hash & hash; }
-    
-    id = "HWID-" + Math.abs(hash).toString(16).toUpperCase(); 
-    localStorage.setItem("device_hw", id); 
-    return id;
-}
-
-const gameSelectOverlay = document.getElementById("gameSelectOverlay"); 
-const entryOverlay = document.getElementById("entryOverlay");
-const entryMsg = document.getElementById("entryMsg"); 
-const checkBtn = document.getElementById("checkBtn");
-const keyInput = document.getElementById("keyInput"); 
-const gameFrame = document.getElementById("game-frame");
-const toolPanel = document.getElementById("tool-panel"); 
-const toggleBtn = document.getElementById("toggle-tool");
-
-document.getElementById("btn-select-lc79").addEventListener("click", () => { selectedGame = 'lc79'; document.getElementById("gameNameDisplay").innerText = "LC79"; document.getElementById("gameNameSub").innerText = "LC79"; hide(gameSelectOverlay); show(entryOverlay); });
-document.getElementById("btn-select-xd88").addEventListener("click", () => { selectedGame = 'xd88'; document.getElementById("gameNameDisplay").innerText = "XOCDIA88"; document.getElementById("gameNameSub").innerText = "XOCDIA88"; hide(gameSelectOverlay); show(entryOverlay); });
-document.getElementById("btn-select-betvip").addEventListener("click", () => { selectedGame = 'betvip'; document.getElementById("gameNameDisplay").innerText = "BETVIP"; document.getElementById("gameNameSub").innerText = "BETVIP"; hide(gameSelectOverlay); show(entryOverlay); });
-document.getElementById("btn-select-sunwin").addEventListener("click", () => { selectedGame = 'sunwin'; document.getElementById("gameNameDisplay").innerText = "SUNWIN"; document.getElementById("gameNameSub").innerText = "SUNWIN"; hide(gameSelectOverlay); show(entryOverlay); });
-document.getElementById("backToGameSelectBtn").addEventListener("click", () => { hide(entryOverlay); show(gameSelectOverlay); keyInput.value = ""; entryMsg.innerText = ""; });
-
-function show(el){ el.style.display = ""; } 
-function hide(el){ el.style.display = "none"; }
-
-let expireTimer = null; 
-let autoRefreshInterval = null;
-
-function startExpireCountdown(expireTs){
-    if(expireTimer) clearInterval(expireTimer);
-    function update(){
-        const diff = expireTs - Date.now();
-        if(diff <= 0){ 
-            document.getElementById("expireBadge").innerText = "HẾT HẠN"; 
-            document.getElementById("expireBadge").style.color = "#f87171"; 
-            clearInterval(expireTimer); 
-            showToast("⏳ MÃ KEY ĐÃ HẾT HẠN. NGẮT KẾT NỐI...", "error"); 
-            setTimeout(() => location.reload(), 2000); 
-            return; 
+        function getSum(val) {
+            if (!val || val.length !== 3) return 0;
+            return parseInt(val[0]) + parseInt(val[1]) + parseInt(val[2]);
         }
-        const totalSec = Math.floor(diff/1000); 
-        const days = Math.floor(totalSec / 86400); 
-        const hours = Math.floor((totalSec % 86400) / 3600);
-        const mins = Math.floor((totalSec % 3600) / 60);
-        document.getElementById("expireBadge").innerText = (days > 0 ? days + "D " : "") + String(hours).padStart(2,"0") + ":" + String(mins).padStart(2,"0");
-    } 
-    update(); expireTimer = setInterval(update, 1000);
-}
 
-async function checkKeyFlow(){
-    const key = (keyInput.value || "").trim();
-    if(!key){ entryMsg.className="msg error"; entryMsg.innerText="! CHƯA NHẬP KEY KHỚP LỆNH"; return; }
-    
-    entryMsg.className="msg"; entryMsg.innerText="ĐANG GIẢI MÃ BẢO MẬT..."; checkBtn.disabled = true;
-    try {
-        const hwid = await getHWID(); const timestamp = Date.now(); const signature = generateSignature(hwid, timestamp);
-        const resp = await fetch(KEY_SERVER_URL + "/check-key", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ key, hwid, game: selectedGame, timestamp, signature }) });
-        const data = await resp.json();
-        
-        if(data && data.success){
-            sessionToken = data.token; currentKey = key;
-            if(data.expire) startExpireCountdown(data.expire); else document.getElementById("expireBadge").innerText = "VIP ∞";
-            
-            entryMsg.className = "msg success"; entryMsg.innerText = `✔️ XÁC THỰC THÀNH CÔNG. ĐANG CHÈN SCRIPT...`;
-            setTimeout(() => { 
-                hide(entryOverlay); 
-                gameFrame.src = (selectedGame === 'lc79' ? "https://lc79b.bet/" : selectedGame === 'xd88' ? "https://play.xocdia88.green/" : selectedGame === 'betvip' ? "https://play.betvip.fit/" : "https://web.sunwin.lt/?affId=Sunwin"); 
-                document.getElementById("tool-title").innerText = `⚡ ${selectedGame.toUpperCase()} PREDICTOR`; 
-                show(gameFrame); 
+        function shiftData() {
+            const newDiceVal = document.getElementById('new_dice').value;
+            const d1 = document.getElementById('d1');
+            const d2 = document.getElementById('d2');
+            const d3 = document.getElementById('d3');
+            const m1 = document.getElementById('m1');
+            const m2 = document.getElementById('m2');
+
+            if (newDiceVal.length === 3) {
+                d3.value = d2.value;
+                d2.value = d1.value;
+                d1.value = newDiceVal;
+                document.getElementById('new_dice').value = "";
                 
-                setTimeout(() => { 
-                    toolPanel.style.display = "block"; toolPanel.setAttribute("aria-hidden","false"); toggleBtn.style.display = "none"; window.lastDataString = ""; 
-                    
-                    // Khởi động vòng lặp tự động lấy dữ liệu (10s/lần)
-                    fetchApiAndPredict();
-                    if(autoRefreshInterval) clearInterval(autoRefreshInterval);
-                    autoRefreshInterval = setInterval(fetchApiAndPredict, 10000);
-
-                }, 300); 
-            }, 1200);
-        } else { entryMsg.className="msg error"; entryMsg.innerText = data && data.message ? ("❌ " + data.message) : "LỖI: KEY KHÔNG HỢP LỆ"; }
-    } catch(err) { entryMsg.className="msg error"; entryMsg.innerText = "LỖI KẾT NỐI MÁY CHỦ"; } finally { checkBtn.disabled = false; }
-}
-
-keyInput.addEventListener("keydown", (e) => { if(e.key === "Enter") checkKeyFlow(); }); 
-checkBtn.addEventListener("click", checkKeyFlow);
-
-function togglePanel(){
-    if(toolPanel.style.display === "none" || toolPanel.getAttribute('aria-hidden') === 'true'){ 
-        toolPanel.style.display = "block"; toolPanel.setAttribute('aria-hidden','false'); toggleBtn.style.display = "none"; 
-    } else { toolPanel.style.display = "none"; toolPanel.setAttribute('aria-hidden','true'); toggleBtn.style.display = "block"; }
-}
-
-function toggleCompactMode() { panel.classList.toggle('compact-mode'); }
-function toggleOrientation() { panel.classList.toggle('horizontal'); const btn = document.getElementById('orientBtn'); if (panel.classList.contains('horizontal')) btn.title = "Chế độ ngang"; else btn.title = "Chế độ dọc"; }
-function getMlsClass(kq) { return (kq === "Tài" || kq === "T") ? "color-tai" : (kq === "Xỉu" || kq === "X") ? "color-xiu" : "color-off"; }
-
-document.querySelectorAll('.logic-toggle').forEach(el => el.addEventListener('change', () => { if(window.lastPredictData) renderUI(window.lastPredictData); }));
-document.getElementById('api-source-select').addEventListener('change', () => { window.lastDataString = ""; setTimeout(fetchApiAndPredict, 500); });
-document.getElementById('btn-advanced-toggle').addEventListener('click', () => { const sec = document.getElementById('advanced-section'); const isHidden = sec.style.display === 'none'; sec.style.display = isHidden ? 'block' : 'none'; document.getElementById('btn-advanced-toggle').innerHTML = isHidden ? '🛠️ ĐÓNG THIẾT LẬP NÂNG CAO' : '🛠️ MỞ THIẾT LẬP NÂNG CAO'; });
-document.getElementById('btn-stats-toggle').addEventListener('click', () => { const sec = document.getElementById('stats-section'); const isHidden = sec.style.display === 'none'; sec.style.display = isHidden ? 'block' : 'none'; document.getElementById('btn-stats-toggle').innerHTML = isHidden ? '📊 ĐÓNG THỐNG KÊ LỊCH SỬ' : '📊 XEM THỐNG KÊ LỊCH SỬ'; });
-
-function renderHistory() {
-    const tbody = document.getElementById("history-tbody");
-    if(!tbody) return;
-    let html = "";
-    let reversed = [...historyLog].reverse();
-    reversed.forEach((item) => {
-        let stColor = item.status === "WIN" ? "color:#34d399;" : (item.status === "LOSE" ? "color:#f87171;" : "color:#cbd5e1;");
-        let pLColor = item.predictLogic === "Tài" ? "color:#f87171;" : (item.predictLogic === "Xỉu" ? "color:#60a5fa;" : "color:#9ca3af;");
-        let pTColor = item.predictTotal === "Tài" ? "color:#f87171;" : (item.predictTotal === "Xỉu" ? "color:#60a5fa;" : "color:#9ca3af;");
-        let acColor = item.actual === "Tài" ? "color:#f87171;" : (item.actual === "Xỉu" ? "color:#60a5fa;" : "color:#9ca3af;");
-        
-        html += `<tr>
-            <td>${item.time}</td>
-            <td style="${pLColor} font-weight:bold;">${item.predictLogic} ${item.percent > 0 ? `<br><small style="color:#aaa;">(${item.percent}%)</small>` : ''}</td>
-            <td style="${pTColor} font-weight:bold;">${item.predictTotal}</td>
-            <td style="${acColor}">${item.actual}</td>
-            <td style="${stColor} font-weight:bold;">${item.status}</td>
-        </tr>`;
-    });
-    tbody.innerHTML = html;
-}
-
-async function fetchApiAndPredict() {
-    const source = document.getElementById("api-source-select").value || 'normal';
-    const seqLength = parseInt(document.getElementById("seq-length-select").value, 10) || 13;
-    const invertChain = document.getElementById('invert-chain-checkbox').checked;
-
-    try {
-        const hwid = await getHWID(); const timestamp = Date.now(); const signature = generateSignature(hwid, timestamp);
-        
-        const predictResp = await fetch(KEY_SERVER_URL + "/predict", { 
-            method: "POST", headers: { "Content-Type":"application/json", "Authorization": "Bearer " + sessionToken }, 
-            body: JSON.stringify({ source, seqLength: seqLength, invertChain, timestamp, signature, game: selectedGame }) 
-        });
-        const data = await predictResp.json();
-        
-        if (data && data.success) {
-            let currentDataString = data.chuoiN.join("") + "-" + (data.lastDice ? data.lastDice.join("") : "");
-            
-            if (window.lastDataString === "") {
-                window.lastDataString = currentDataString;
-                let predictLogic = (data.logic_chuoi && data.logic_chuoi.ket_qua) ? data.logic_chuoi.ket_qua : "Không rõ";
-                let predictTotal = data.ket_qua_du_doan || "Không rõ";
-                let pt = data.logic_chuoi ? Math.max(data.logic_chuoi.ty_le_tai || 0, data.logic_chuoi.ty_le_xiu || 0) : 0;
-                historyLog.push({ time: new Date().toLocaleTimeString('vi-VN', {hour12:false}), predictLogic: predictLogic, predictTotal: predictTotal, percent: pt, actual: "...", status: "..." });
-                renderHistory();
-            } else if (window.lastDataString !== currentDataString) { 
-                showToast("PHÁT HIỆN TÍN HIỆU! ĐANG ÉP DATA...", "success"); 
-                playBeep('normal'); 
-
-                let actualChar = data.chuoiN[data.chuoiN.length - 1]; 
-                let actualStr = actualChar === "T" ? "Tài" : (actualChar === "X" ? "Xỉu" : "Hòa");
-                
-                if (historyLog.length > 0) {
-                    let lastP = historyLog[historyLog.length - 1];
-                    if (lastP.status === "...") {
-                        lastP.actual = actualStr;
-                        
-                        let activePredict = "Không rõ";
-                        if (lastP.predictTotal === "Tài" || lastP.predictTotal === "Xỉu") {
-                            activePredict = lastP.predictTotal;
-                        } else if (lastP.predictLogic === "Tài" || lastP.predictLogic === "Xỉu") {
-                            activePredict = lastP.predictLogic;
-                        }
-
-                        if (activePredict === "Không rõ" || activePredict === "ĐÃ TẮT") {
-                            lastP.status = "SKIP";
-                        } else {
-                            lastP.status = (activePredict === actualStr) ? "WIN" : "LOSE";
-                        }
-                    }
+                if (m1.value !== "") {
+                    let currentM1 = parseInt(m1.value);
+                    m2.value = currentM1;
+                    m1.value = currentM1 + 1; 
                 }
 
-                window.lastDataString = currentDataString; 
-                let predictLogic = (data.logic_chuoi && data.logic_chuoi.ket_qua) ? data.logic_chuoi.ket_qua : "Không rõ";
-                let predictTotal = data.ket_qua_du_doan || "Không rõ";
-                let pt = data.logic_chuoi ? Math.max(data.logic_chuoi.ty_le_tai || 0, data.logic_chuoi.ty_le_xiu || 0) : 0;
-                historyLog.push({ time: new Date().toLocaleTimeString('vi-VN', {hour12:false}), predictLogic: predictLogic, predictTotal: predictTotal, percent: pt, actual: "...", status: "..." });
-                renderHistory();
+                runEngine();
+            } else {
+                alert("Hãy nhập đủ 3 số xúc xắc!");
             }
-            window.lastPredictData = data;
-            renderUI(data);
-        } else {
-            showToast(`API ERROR: ${data.message || 'Hệ thống gián đoạn.'}`, 'error');
-            if (data.kicked) setTimeout(() => { location.reload(); }, 2500); 
         }
-    } catch (e) { /* Lỗi ngầm thì kệ nó vòng lặp quét tiếp */ }
-}
 
-// Hàm Vẽ Giao Diện
-function renderUI(data) {
-    const resultBox = document.getElementById("result-box");
-    const useChuoi = document.getElementById('toggle-chuoi').checked;
-    const useDice = document.getElementById('toggle-dice').checked;
-    const hidePercent = document.getElementById('hide-percent').checked;
+        function runEngine() {
+            const rawM1 = document.getElementById('m1').value.toString();
+            const rawM2 = document.getElementById('m2').value.toString();
+            
+            const valM1 = rawM1 ? parseInt(rawM1.slice(-3)) : NaN; 
+            const valM2 = rawM2 ? parseInt(rawM2.slice(-3)) : NaN; 
+            
+            const s1 = getSum(document.getElementById('d1').value);
+            const s2 = getSum(document.getElementById('d2').value);
+            const s3 = getSum(document.getElementById('d3').value);
 
-    const L_chuoi = data.logic_chuoi || {}; 
-    const L_xx = data.logic_xuc_xac || {}; 
-    let finalKQ = data.ket_qua_du_doan || "Không rõ";
+            const verdict = document.getElementById('verdict');
+            const logBox = document.getElementById('logBox');
 
-    if(!useChuoi && !useDice) finalKQ = "ĐÃ TẮT";
+            if (!isNaN(valM1) && !isNaN(valM2) && s1>0 && s2>0 && s3>0) {
+                
+                // 1. TÍNH ĐIỂM A (Theo trọng số vét cạn Top 1)
+                const A = (7 * valM1) - (6 * valM2) + (15 * s1) + (7 * s2) + (3 * s3);
 
-    let html = `
-        <div class="info-row hide-on-compact" style="min-width:140px; margin-bottom: 10px;">
-            <div style="color:var(--neon-blue); font-size:12px; margin-bottom:6px; font-weight: bold;">SOURCE: <span style="color:#fff;">[${document.getElementById("api-source-select").value.toUpperCase()}]</span> — CHUỖI ${data.chuoiN.length} VÁN:</div>
-            <div class="seq-text">${data.chuoiN.join("")}</div>
-        </div>
-        <div class="pred-grid">
-    `;
+                // 2. MODULO 24 (Chu kỳ an toàn)
+                const modResult = ((A % 24) + 24) % 24;
 
-    // Ô Phân tích chuỗi
-    if (useChuoi) {
-        html += `<div class="pred-box" style="grid-column: span 2;">
-                    <div class="pred-title">📊 PHÂN TÍCH CHUỖI CẦU</div>
-                    <div class="pred-value ${getMlsClass(L_chuoi.ket_qua)}">${L_chuoi.ket_qua}</div>
-                    ${hidePercent ? '' : `<div class="pred-sub">Tài: ${L_chuoi.ty_le_tai || 0}% | Xỉu: ${L_chuoi.ty_le_xiu || 0}%</div>`}
-                    <div class="pred-sub" style="color:var(--gold); font-weight:bold; margin-top:4px;">Gợi ý: ${L_chuoi.goi_y || ""}</div>
-                 </div>`;
-    }
+                // 3. LOGIC SẠCH 100%: Lấy nửa trên (>= 12) là TÀI, nửa dưới (< 12) là XỈU
+                // Không có bất kỳ mảng dữ liệu dán cứng nào!
+                const isTai = modResult >= 12;
 
-    // Ô Xúc xắc
-    if (useDice) {
-        html += `<div class="pred-box hide-on-compact" style="grid-column: span 2; padding: 10px;">
-                    <div class="pred-title">🎲 PHÂN TÍCH XÚC XẮC</div>
-                    <div class="pred-value ${getMlsClass(L_xx.ket_qua)}">${L_xx.ket_qua}</div>
-                    <div class="pred-sub">Chi tiết: ${L_xx.chi_tiet || ""}</div>
-                 </div>`;
-    }
+                verdict.innerText = isTai ? "TÀI" : "XỈU";
+                verdict.className = isTai ? "is-tai" : "is-xiu";
 
-    // Ô Chốt Tổng hợp
-    html += `<div class="pred-box pred-final">
-                <div class="pred-title" style="color: var(--neon-blue); text-shadow: 0 0 10px rgba(0,243,255,0.8); font-size: 14px;">🔥 CHỐT KẾT QUẢ TỔNG HỢP 🔥</div>
-                <div class="pred-value ${getMlsClass(finalKQ)}" style="font-size: 32px; letter-spacing: 2px;">${finalKQ}</div>
-             </div>
-        </div>`;
-
-    // Xử lý Cảnh Báo
-    if (useChuoi && L_chuoi.cau_bip) { 
-        html += `<div class="info-row hide-on-compact" style="border: 1px dashed var(--neon-red); background: rgba(255,42,42,0.1); margin-top: 10px; box-shadow: inset 0 0 10px rgba(255,42,42,0.2);">
-                    <div style="color:var(--neon-red); font-weight:bold; font-size:13px; text-shadow: 0 0 5px rgba(255,42,42,0.5);">⚠️ CẢNH BÁO: ${L_chuoi.cau_bip}</div>
-                 </div>`; 
-        playBeep('warn'); 
-    }
-
-    resultBox.innerHTML = html;
-}
-
-const panel = document.getElementById("tool-panel"); const header = document.getElementById("panel-header");
-let isDragging = false, offsetX, offsetY;
-function changeScale(d) { let c = parseFloat(getComputedStyle(panel).getPropertyValue('--panel-scale')) || 1; panel.style.setProperty('--panel-scale', Math.min(2, Math.max(0.6, +(c + d).toFixed(2)))); }
-function resetScale() { panel.style.setProperty('--panel-scale', 1); }
-
-header.addEventListener('mousedown', (e) => { isDragging = true; const r = panel.getBoundingClientRect(); offsetX = e.clientX - r.left; offsetY = e.clientY - r.top; panel.style.right = 'auto'; });
-document.addEventListener('mousemove', (e) => { if(!isDragging) return; panel.style.left = (e.clientX - offsetX) + 'px'; panel.style.top = (e.clientY - offsetY) + 'px'; });
-document.addEventListener('mouseup', () => { isDragging = false; });
-header.addEventListener('touchstart', (ev) => { const t = ev.touches[0]; isDragging = true; const r = panel.getBoundingClientRect(); offsetX = t.clientX - r.left; offsetY = t.clientY - r.top; panel.style.right = 'auto'; }, {passive:true});
-document.addEventListener('touchmove', (ev) => { if(!isDragging) return; const t = ev.touches[0]; panel.style.left = (t.clientX - offsetX) + 'px'; panel.style.top = (t.clientY - offsetY) + 'px'; }, {passive:true});
-document.addEventListener('touchend', () => { isDragging = false; });
-</script>
+                logBox.innerHTML = `
+                    > [A] = 7(${valM1}) - 6(${valM2}) + 15(${s1}) + 7(${s2}) + 3(${s3})<br>
+                    > [A] = <span style="color:#fff">${A}</span><br>
+                    > Dư (A % 24) = <span class="hl">${modResult}</span><br>
+                    > Logic: ${modResult} ${isTai ? '>= 12' : '< 12'} => <span class="hl">${isTai ? 'TÀI' : 'XỈU'}</span>
+                `;
+            }
+        }
+    </script>
 </body>
 </html>
